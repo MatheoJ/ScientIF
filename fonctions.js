@@ -11,8 +11,8 @@ function rechercher() {
                               PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                               \n
                               SELECT * WHERE {
-                              ?p foaf:name ?n 
-                              FILTER(?n = "`;
+                              ?p foaf:name ?name .
+                              FILTER(?name = "`;
       var contenu_requete = document.getElementById("mot_cle").value;
       var fin_requete = `"@en)
                               }`;
@@ -60,16 +60,26 @@ function rechercher() {
     // pour vos applications, c'est juste pour la démo sous forme de tableau
     var index = [];
 
-    var contenuTableau = "<tr>";
+    console.log(data);
 
-    data.head.vars.forEach((v, i) => {
-      contenuTableau += "<th>" + v + "</th>";
-      index.push(v);
-    });
+    var contenuTableau = "";
 
+    
     data.results.bindings.forEach(r => {
-      contenuTableau += "<tr>";
+      //contenuTableau += "<tr>";
 
+      contenuTableau += 
+          "<div class='col'>"
+          + "<div class='card'>"
+            //<img src="..." class="card-img-top" alt="...">
+            + "<div class='card-body'>"
+              + "<h5 class='card-title'>"+r.name.value+"</h5>"
+              //+ "<p class='card-text'>"+r.birthDate.value+"</p>"
+              + "<a href='"+r.p.value+"' class='btn btn-primary stretched-link' target='_blank'>DBpedia</a>"
+            + "</div>"
+          + "</div>"
+        + "</div>"
+/*
       index.forEach(v => {
         if (r[v]) {
           if (r[v].type === "uri") {
@@ -84,10 +94,10 @@ function rechercher() {
         }
       });
 
-      contenuTableau += "</tr>";
+      contenuTableau += "</tr>";*/
     });
 
-    contenuTableau += "</tr>";
-    document.getElementById("resultats").innerHTML = contenuTableau;
+    //contenuTableau += "</tr>";
+    document.getElementById("zone-resultats-recherche").innerHTML = contenuTableau;
 
   }
