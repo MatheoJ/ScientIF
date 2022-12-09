@@ -6,6 +6,8 @@
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <title>Scient'IF'ique</title> 
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
     </head>
     <body>
 
@@ -33,10 +35,10 @@
             <div class="container mt-3 text-center">
                 <div class="row">
                     <div class="col">
-                        <form class="form-inline justify-content-center">
+                        <!-- <form class="form-inline justify-content-center"> -->
                             <textarea id="requete" rows="20" cols="80"></textarea>
                             <button class="btn btn-outline-success" onclick="rechercher()" type="submit">Search</button>
-                        </form>
+                        <!-- </form> -->
                     </div>
                 </div>
                 <div class="row">
@@ -52,7 +54,7 @@
 
 
 
-
+        
         <script>
             (function() {
               document.getElementById("requete").innerHTML = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -72,25 +74,41 @@
           })();
           
             function rechercher() {
-              var contenu_requete = document.getElementById("requete").value;
-          
-              // Encodage de l'URL à transmettre à DBPedia
-              var url_base = "http://dbpedia.org/sparql";
-              var url = url_base + "?query=" + encodeURIComponent(contenu_requete) + "&format=json";
-          
-              // Requête HTTP et affichage des résultats
-              var xmlhttp = new XMLHttpRequest();
-              xmlhttp.onreadystatechange = function() {
-                  if (this.readyState == 4 && this.status == 200) {
-                      var results = JSON.parse(this.responseText);
-                      console.log(results)
-                      afficherResultats(results);
-                  }
-              };
-              xmlhttp.open("GET", url, true);
-              xmlhttp.send();
+                var contenu_requete = document.getElementById("requete").value;
+                // Encodage de l'URL à transmettre à DBPedia
+                var url_base = "http://dbpedia.org/sparql/";
+                $(document).ready(function(){
+                    $.ajax({
+                        //L'URL de la requête 
+                        url: url_base,
+
+                        //La méthode d'envoi (type de requête)
+                        method: "GET",
+
+                        //Le format de réponse attendu
+                        dataType : "json",
+                        data : {query : contenu_requete}
+                    })
+                    //Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done()
+                    /*On peut par exemple convertir cette réponse en chaine JSON et insérer
+                    * cette chaine dans un div id="res"*/
+                    .done(function(response){
+                        //let data = (response);
+                        afficherResultats(response);
+                    })
+
+                    //Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
+                    //On peut afficher les informations relatives à la requête et à l'erreur
+                    .fail(function(error){
+                        alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
+                    })
+                    //Ce code sera exécuté que la requête soit un succès ou un échec
+                    .always(function(){
+                        //alert("Requête effectuée");
+                    });
+                });
             }
-          
+                    
             // Affichage des résultats dans un tableau
             function afficherResultats(data)
             {
