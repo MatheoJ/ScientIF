@@ -20,22 +20,38 @@ function rechercher() {
       var requete = debut_requete + contenu_requete + fin_requete;
 
     // Encodage de l'URL à transmettre à DBPedia
-    var url_base = "http://dbpedia.org/sparql";
-    var url = url_base + "?query=" + encodeURIComponent(requete) + "&format=json";
+    var url_base = "http://dbpedia.org/sparql/";
+    $(document).ready(function(){
+        $.ajax({
+            //L'URL de la requête 
+            url: url_base,
 
-    // Requête HTTP et affichage des résultats
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            var results = JSON.parse(this.responseText);
-            console.log(results)
-            afficherResultats(results);
-        }
-    };
+            //La méthode d'envoi (type de requête)
+            method: "GET",
 
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-  }
+            //Le format de réponse attendu
+            dataType : "json",
+            data : {query : requete}
+        })
+        //Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done()
+        /*On peut par exemple convertir cette réponse en chaine JSON et insérer
+        * cette chaine dans un div id="res"*/
+        .done(function(response){
+            //let data = (response);
+            afficherResultats(response);
+        })
+
+        //Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
+        //On peut afficher les informations relatives à la requête et à l'erreur
+        .fail(function(error){
+            alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
+        })
+        //Ce code sera exécuté que la requête soit un succès ou un échec
+        .always(function(){
+            //alert("Requête effectuée");
+        });
+    });
+}
 
   // Affichage des résultats dans un tableau
   function afficherResultats(data)
