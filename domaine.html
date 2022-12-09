@@ -2,6 +2,9 @@
 <html>
   <head>
     <title>Astronomy</title>
+    <script type="text/javascript" src="fonctions.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
   </head>
   <body>
     <h1>Astronomy</h1>
@@ -15,9 +18,14 @@
     <li>The closest star to Earth is the Sun, which is about 93 million miles away.</li>
     <li>The Moon is the Earth's only natural satellite.</li>
     </ul>
-    <img src="https://www.example.com/astronomy.jpg" alt="A picture of the night sky">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Omega_Nebula.jpg/1920px-Omega_Nebula.jpg" alt="A picture of the night sky">
     <a href="https://en.wikipedia.org/wiki/Astronomy">Learn more about astronomy on Wikipedia</a>
 
+    <div class="row">
+        <table class="table" id="resultats">
+
+        </table>
+    </div>
 
     </body>
 
@@ -28,7 +36,8 @@
         var domain = searchParams.get("domain_name");
         // Do something with the value of the parameter
         console.log(domain);
-        
+        rechercherDomaine(domain);
+
     </script>
 </html>
 
