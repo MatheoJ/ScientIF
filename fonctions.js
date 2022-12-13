@@ -195,7 +195,7 @@ function afficherResultats(data) {
     //contenuTableau += "<tr>";
 
     contenuTableau +=
-      "<div class='col'>"
+      "<div class='col-3 mb-3'>"
       + "<div class='card'>"
       //<img src="..." class="card-img-top" alt="...">
       + "<div class='card-body'>"
