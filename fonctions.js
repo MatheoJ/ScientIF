@@ -12,6 +12,7 @@ function rechercher(name) {
                               \n
                               SELECT * WHERE {
                               ?p foaf:name ?name .
+                              ?p dbo:abstract ?resume .
                               FILTER(?name = "`;
       var contenu_requete = name;
       var fin_requete = `"@en)
@@ -181,12 +182,12 @@ $(document).ready(function(){
       //contenuTableau += "<tr>";
 
       contenuTableau += 
-          "<div class='col'>"
+          "<div class='col-3 mb-3'>"
           + "<div class='card'>"
             //<img src="..." class="card-img-top" alt="...">
-            + "<div class='card-body'>"
+            + "<div class='card-body w-3'>"
               + "<h5 class='card-title'>"+r.name.value+"</h5>"
-              //+ "<p class='card-text'>"+r.birthDate.value+"</p>"
+              + "<p class='card-text'><span class='more'>"+r.resume.value+"</span></p>"
               + "<a href='"+r.p.value+"' class='btn btn-primary stretched-link' target='_blank'>DBpedia</a>"
             + "</div>"
           + "</div>"
@@ -210,6 +211,6 @@ $(document).ready(function(){
     });
 
     //contenuTableau += "</tr>";
-    document.getElementById("zone-resultats-recherche").innerHTML = contenuTableau;
-
+    $("#zone-resultats-recherche").html(contenuTableau);
+    activerCollapsibleTexts();
   }
