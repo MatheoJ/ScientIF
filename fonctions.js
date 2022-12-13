@@ -23,9 +23,9 @@ function rechercherNom(name) {
                               ?p dbo:birthDate ?birthday .
                               ?p dbo:academicDiscipline ?discipline .
                               ?discipline rdfs:label ?nomDiscipline .
-                              FILTER CONTAINS(?name, "`;
+                              FILTER CONTAINS(lcase(?name), lcase("`;
   var contenu_requete = name;
-  var fin_requete = `")
+  var fin_requete = `"))
                     FILTER LANGMATCHES(lang(?resume), 'en')
                     FILTER LANGMATCHES(lang(?nomDiscipline), 'en')
                     }`;
