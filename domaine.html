@@ -19,7 +19,7 @@
   <a id="pageWikipedia">Pour en savoir plus...</a>
   <h2>Informations supplementaires</h2>
 
-  <p>Scientifques dont c'est le champ d'etude : </p>
+  <p>Scientifiques dont c'est le champ d'etude : </p>
   <div style="max-height: 300px; overflow: scroll;"> 
     <table class="table table-bordered table-hover" id="scientifiques">
       <thead>
@@ -65,9 +65,9 @@
       image.setAttribute("src", response.results.bindings[0].o.value);
     });
 
-    rechercherTout(null, "dbo:academicDiscipline", "dbr:"+domain, function (response) {
+    rechercherScientifique("dbr:"+domain, function (response) {
       var input = response.results.bindings;
-
+      console.log("oui", response);
       var data = input.map(function(item) {
         return item.s.value.replace('http://dbpedia.org/resource/', '').replace('_', ' ');
       });
