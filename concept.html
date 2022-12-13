@@ -15,19 +15,22 @@
 <body>
     <h1 id="titre"></h1>
     <p id="resume"></p>
-    <a id="pageWikipedia">Pour en savoir plus...</a>
+    <a id="pageWikipedia">More on wikipedia...</a>
     <h2>Informations supplementaires</h2>
 
     <p>Scientists</p>
-    <table class="table table-bordered table-hover" id="scientifiques">
-        <thead>
-            <tr>
-                <th>Noms des scientifiques</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div style="max-height: 300px; overflow: scroll;">
+        <table class="table table-bordered table-hover" id="scientifiques">
+            <thead>
+                <tr>
+                    <th>Scientists related to this discovery</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    
 
     <script>
         // Get the query string from the URL
@@ -50,12 +53,11 @@
             var element = response.results.bindings.find(obj => obj.o["xml:lang"] === "en");
             resume.innerHTML = element.o.value;
         });
-        rechercherTout("dbr:" + domain, "dbo:thumbnail", null, function (response) {
+        rechercherTout("dbr:" + domain, "dbo:thumbnail", null, function (response){
             var image = document.querySelector('#image');
             image.setAttribute("src", response.results.bindings[0].o.value);
         });
-        rechercherInventeur("dbr:" + domain, function (response) {
-            console.log("ouijin", response);
+        rechercherInventeur("dbr:" + domain, function (response){
             var input = response.results.bindings;
             var data = input.map(function (item) {
                 return item.o.value.replace('http://dbpedia.org/resource/', '').replace('_', ' ');
@@ -64,7 +66,6 @@
             const tbody = document.querySelector('#scientifiques tbody');
             // Insérez les données dans le tableau
             for (const row of data) {
-                
                 const tr = document.createElement('tr');
                 const td = document.createElement('td');
                 const a = document.createElement("a");
