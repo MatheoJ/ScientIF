@@ -293,6 +293,16 @@ function rechercherInventeur(sujet, callback){
   });
 }
 
+function afficherChargement() {
+  $("#zone-resultats-recherche").html(
+  ` <div>
+    <div class="spinner-border spinner-border-sm" role="status">
+     <span class="visually-hidden">Chargement...</span>
+    </div>
+    Chargement...
+    </div>`);
+
+}
 
 // Affichage des résultats dans un tableau
 function afficherResultats(data) {
