@@ -176,52 +176,6 @@ function rechercherTout(sujet, predicat, objet, callback) {
       // Ce code sera exécuté que la requête soit un succès ou un échec
       .always(function () {
         //alert("Requête effectuée");
-<<<<<<< HEAD
-=======
-    });
-});
-}
-
-  // Affichage des résultats dans un tableau
-  function afficherResultats(data)
-  {
-    // Tableau pour mémoriser l'ordre des variables ; sans doute pas nécessaire
-    // pour vos applications, c'est juste pour la démo sous forme de tableau
-    var index = [];
-
-    console.log(data);
-
-    var contenuTableau = "";
-
-    
-    data.results.bindings.forEach(r => {
-      //contenuTableau += "<tr>";
-
-      contenuTableau += 
-          "<div class='col-3 mb-3'>"
-          + "<div class='card'>"
-            //<img src="..." class="card-img-top" alt="...">
-            + "<div class='card-body w-3'>"
-              + "<h5 class='card-title'>"+r.name.value+"</h5>"
-              + "<p class='card-text'><span class='more'>"+r.resume.value+"</span></p>"
-              + "<a href='"+r.p.value+"' class='btn btn-primary stretched-link' target='_blank'>DBpedia</a>"
-            + "</div>"
-          + "</div>"
-        + "</div>"
-/*
-      index.forEach(v => {
-        if (r[v]) {
-          if (r[v].type === "uri") {
-            contenuTableau += "<td><a href='" + r[v].value + "' target='_blank'>" + r[v].value + "</a></td>";
-          }
-          else {
-            contenuTableau += "<td>" + r[v].value + "</td>";
-          }
-        }
-        else {
-          contenuTableau += "<td></td>";
-        }
->>>>>>> fa462a6450f88176048cc6d0c8fa2938de7a745d
       });
   });
 }*/
@@ -232,7 +186,6 @@ function afficherResultats(data) {
   // pour vos applications, c'est juste pour la démo sous forme de tableau
   var index = [];
 
-<<<<<<< HEAD
   console.log(data);
 
   var contenuTableau = "";
@@ -247,7 +200,7 @@ function afficherResultats(data) {
       //<img src="..." class="card-img-top" alt="...">
       + "<div class='card-body'>"
       + "<h5 class='card-title'>" + r.name.value + "</h5>"
-      //+ "<p class='card-text'>"+r.birthDate.value+"</p>"
+      + "<p class='card-text'><span class='more'>"+r.resume.value+"</span></p>"
       + "<a href='" + r.p.value + "' class='btn btn-primary stretched-link' target='_blank'>DBpedia</a>"
       + "</div>"
       + "</div>"
@@ -269,14 +222,8 @@ function afficherResultats(data) {
     
           contenuTableau += "</tr>";*/
   });
-
-  //contenuTableau += "</tr>";
-  document.getElementById("zone-resultats-recherche").innerHTML = contenuTableau;
-
-}
-=======
+  
     //contenuTableau += "</tr>";
     $("#zone-resultats-recherche").html(contenuTableau);
     activerCollapsibleTexts();
   }
->>>>>>> fa462a6450f88176048cc6d0c8fa2938de7a745d
