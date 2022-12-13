@@ -304,7 +304,7 @@ function afficherResultats(data) {
   data.results.bindings.forEach(r => {
     disciplines = r.disciplines.value.split(", ");
     contenuTableau +=
-      `<div class='col-3 mb-3'>
+      `<div class='col mb-3'>
         <div class='card'>
           <!-- <img src="..." class="card-img-top" alt="..."> -->
           <div class='card-body'>
@@ -313,7 +313,7 @@ function afficherResultats(data) {
       disciplines.forEach(element => {
         contenuTableau += 
           `<span class="badge bg-secondary mx-1">
-            <a href="domaine.html?domain_name=${element.replaceAll(" ", "_")}" class="text-light">
+            <a href="domaine.html?domain_name=${element.replaceAll(" ", "_")}" class="link-light">
             ${element}
             </a>
           </span>`;
