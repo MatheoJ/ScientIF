@@ -14,6 +14,7 @@
 
 <body>
     <h1 id="titre"></h1>
+    <img id="image"></img>
     <p id="resume"></p>
     <a id="pageWikipedia">More on wikipedia...</a>
     <h2>Informations supplementaires</h2>
@@ -31,6 +32,17 @@
         </table>
     </div>
     
+    <div style="max-height: 300px; overflow: scroll;">
+        <table class="table table-bordered table-hover" id="concepts">
+            <thead>
+                <tr>
+                    <th>Concepts related to this discovery</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 
     <script>
         // Get the query string from the URL
@@ -76,6 +88,27 @@
                 tbody.appendChild(tr);
             }
         });
+
+        rechercherTout("dbr:"+domain, "rdfs:seeAlso", null, function(response){
+            var input = response.results.bindings;
+            var data = input.map(function (item) {
+                return item.o.value.replace('http://dbpedia.org/resource/', '').replace('_', ' ');
+            });
+            // Récupérez l'élément <tbody>
+            const tbody = document.querySelector('#concepts tbody');
+            // Insérez les données dans le tableau
+            for (const row of data) {
+                const tr = document.createElement('tr');
+                const td = document.createElement('td');
+                const a = document.createElement("a");
+                a.href = "concept.html?concept_name=" + row.replace(' ', '_');
+                a.innerHTML = row;
+                td.appendChild(a);
+                tr.appendChild(td);
+                tbody.appendChild(tr);
+            }
+        });
+
     </script>
 </body>
 
