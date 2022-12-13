@@ -4,6 +4,7 @@ function rechercherScientist(scientistName){
     decodeURIComponent(scientistName);
     scientistName = scientistName.replaceAll('(', '\\(');
     scientistName = scientistName.replaceAll(')', '\\)');
+    scientistName = scientistName.replaceAll(',', '\\,');
   var requete = `
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -96,7 +97,18 @@ function afficherScientist(response)
     if(response.results.bindings[0].hasOwnProperty("thumbnail")){
         var image = document.querySelector('#image');
         image.setAttribute("src", response.results.bindings[0].thumbnail.value);
-    }    
+    }  
+    if(response.results.bindings[0].hasOwnProperty("date")){
+        var date = document.querySelector('#dateNaissance');
+        date.innerHTML= "Né.e le :"+response.results.bindings[0].date.value;
+    } 
+    if(response.results.bindings[0].hasOwnProperty("conjoint")){
+        var lien = document.querySelector('#conjoint');
+        var conjointLien = response.results.bindings[0].conjoint.value;
+        lien.setAttribute("href", "scientist.html?scientist_name="+conjointLien.replace('http://dbpedia.org/resource/', ''));
+        lien.innerHTML =response.results.bindings[0].conjoint.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+        
+    } 
     if(response.results.bindings[0].hasOwnProperty("disciplines")){        
         var data = response.results.bindings[0].disciplines.value.split(';');
         // Récupérez l'élément <tbody>
