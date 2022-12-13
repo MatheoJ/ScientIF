@@ -45,7 +45,7 @@ function rechercherNom(name) {
       //Le format de réponse attendu
       dataType: "json",
       data: { query: requete },
-      beforeSend: afficherChargement()
+      beforeSend: afficherChargement($("#zone-resultats-recherche"), "Chargement")
     })
 
       /*Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done().
@@ -293,13 +293,13 @@ function rechercherInventeur(sujet, callback){
   });
 }
 
-function afficherChargement() {
-  $("#zone-resultats-recherche").html(
+function afficherChargement(zone, texte) {
+  zone.html(
   ` <div>
     <div class="spinner-border spinner-border-sm" role="status">
-     <span class="visually-hidden">Chargement...</span>
+     <span class="visually-hidden">${texte}...</span>
     </div>
-    Chargement...
+    ${texte}...
     </div>`);
 
 }
