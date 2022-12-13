@@ -308,7 +308,9 @@ function afficherResultats(data) {
         <div class='card'>
           <!-- <img src="..." class="card-img-top" alt="..."> -->
           <div class='card-body'>
-            <h5 class='card-title text-center'> ${r.name.value} </h5>
+            <h5 class='card-title text-center'>
+              <a class="link-dark text-decoration-none" href="scientist.html?scientist_name=${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}">${r.name.value}</a>
+            </h5>
             <div class="card-subtitle mb-2 text-center">`;
       disciplines.forEach(element => {
         contenuTableau += 
