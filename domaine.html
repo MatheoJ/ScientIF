@@ -45,7 +45,7 @@
     rechercherTout("dbr:"+domain, "rdfs:label", null, function(response){
       var titre = document.querySelector('#titre');
       var nomPage = document.querySelector("#nomPage");
-      var element = response.results.bindings.find(obj => obj.o["xml:lang"] === "fr");
+      var element = response.results.bindings.find(obj => obj.o["xml:lang"] === "en");
       titre.innerHTML = nomPage.innerHTML = element.o.value;
     });
 
@@ -57,7 +57,7 @@
     rechercherTout("dbr:"+domain, "dbo:abstract", null, function(response){
       console.log("titre : ",response);
       var resume = document.querySelector('#resume');
-      var element = response.results.bindings.find(obj => obj.o["xml:lang"] === "fr");
+      var element = response.results.bindings.find(obj => obj.o["xml:lang"] === "en");
       resume.innerHTML = element.o.value;
     });
     rechercherTout("dbr:"+domain, "dbo:thumbnail", null, function(response){

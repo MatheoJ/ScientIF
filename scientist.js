@@ -1,4 +1,10 @@
 function rechercherScientist(scientistName){
+
+    
+    decodeURIComponent(scientistName);
+    scientistName = scientistName.replaceAll('(', '\\(');
+    scientistName = scientistName.replaceAll(')', '\\)');
+    scientistName = scientistName.replaceAll(',', '\\,');
   var requete = `
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -11,18 +17,29 @@ function rechercherScientist(scientistName){
         PREFIX dbpedia: <http://dbpedia.org/>
         PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
         \n
-        SELECT GROUP_CONCAT(?discipline;separator =";") AS ?disciplines ?name ?description ?conjoint ?isPrimaryTopicOf ?thumbnail WHERE {
-            :${scientistName} dbo:academicDiscipline ?discipline.
-            :${scientistName} foaf:name ?name.
+        SELECT GROUP_CONCAT(DISTINCT ?discipline;separator =";") AS ?disciplines 
+        GROUP_CONCAT(DISTINCT ?doctoralStudent;separator =";") AS ?doctoralStudents
+        ?name 
+        ?description 
+        ?conjoint 
+        ?isPrimaryTopicOf 
+        ?thumbnail 
+        ?date WHERE {
+            
+            :${scientistName} rdfs:label ?name.
+            OPTIONAL{:${scientistName} dbo:academicDiscipline ?discipline}
             OPTIONAL{:${scientistName} dbo:birthDate ?date}
             OPTIONAL{:${scientistName} dbo:abstract ?description}
             OPTIONAL{:${scientistName} dbo:spouse ?conjoint}
             OPTIONAL{:${scientistName} foaf:isPrimaryTopicOf ?isPrimaryTopicOf}
             OPTIONAL{:${scientistName} dbo:thumbnail ?thumbnail}
+            OPTIONAL{:${scientistName} dbo:doctoralStudent ?doctoralStudent}
             FILTER(langMatches(lang(?description),"EN"))
+            FILTER(langMatches(lang(?name),"EN"))
         }`;
-  
-      
+        
+    
+    //requete=encodeURIComponent(requete);
     // Encodage de l'URL à transmettre à DBPedia
     var url_base = "http://dbpedia.org/sparql/";
     $(document).ready(function(){
@@ -67,26 +84,67 @@ function afficherScientist(response)
     var nomPage = document.querySelector("#nomPage");
     var element = response.results.bindings[0].name.value;
     titre.innerHTML = nomPage.innerHTML = element;
-    var lien = document.querySelector('#pageWikipedia');
-    lien.setAttribute("href", response.results.bindings[0].isPrimaryTopicOf.value);
-    var resume = document.querySelector('#resume');
-    element = response.results.bindings[0].description.value;
-    resume.innerHTML = element;
-    var image = document.querySelector('#image');
-    image.setAttribute("src", response.results.bindings[0].thumbnail.value);
-    var data = response.results.bindings[0].disciplines.value.split(';');
-    // Récupérez l'élément <tbody>
-    const tbody = document.querySelector('#disciplines tbody');
-    // Insérez les données dans le tableau
-    for (const row of data) {
-        const tr = document.createElement('tr');
-
-        const td = document.createElement('td');
-        const a = document.createElement("a");
-        a.href = "domaine.html?domain_name="+row.replace('http://dbpedia.org/resource/', '').replace('_', ' ');
-        a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replace('_', ' ');;
-        td.appendChild(a);
-        tr.appendChild(td);
-        tbody.appendChild(tr);
+    
+    if(response.results.bindings[0].hasOwnProperty("isPrimaryTopicOf")){
+        var lien = document.querySelector('#pageWikipedia');
+        lien.setAttribute("href", response.results.bindings[0].isPrimaryTopicOf.value);
     }
+    if(response.results.bindings[0].hasOwnProperty("description")){
+        var resume = document.querySelector('#resume');
+        element = response.results.bindings[0].description.value;
+        resume.innerHTML = element;
+    }    
+    if(response.results.bindings[0].hasOwnProperty("thumbnail")){
+        var image = document.querySelector('#image');
+        image.setAttribute("src", response.results.bindings[0].thumbnail.value);
+    }  
+    if(response.results.bindings[0].hasOwnProperty("date")){
+        var date = document.querySelector('#dateNaissance');
+        date.innerHTML= "Né.e le :"+response.results.bindings[0].date.value;
+    } 
+    if(response.results.bindings[0].hasOwnProperty("conjoint")){
+        var lien = document.querySelector('#conjoint');
+        var conjointLien = response.results.bindings[0].conjoint.value;
+        lien.setAttribute("href", "scientist.html?scientist_name="+conjointLien.replace('http://dbpedia.org/resource/', ''));
+        lien.innerHTML =response.results.bindings[0].conjoint.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+        
+    } 
+    if(response.results.bindings[0].hasOwnProperty("disciplines")){        
+        var data = response.results.bindings[0].disciplines.value.split(';');
+        // Récupérez l'élément <tbody>
+        const tbody = document.querySelector('#disciplines tbody');
+        // Insérez les données dans le tableau
+        for (const row of data) {
+            const tr = document.createElement('tr');
+
+            const td = document.createElement('td');
+            const a = document.createElement("a");
+            a.href = "domaine.html?domain_name="+row.replace('http://dbpedia.org/resource/', '');
+            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+            td.appendChild(a);
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        }
+    }
+    if(response.results.bindings[0].hasOwnProperty("doctoralStudents")){   
+
+        var data = response.results.bindings[0].doctoralStudents.value.split(';');
+        // Récupérez l'élément <tbody>
+        const tbody2 = document.querySelector('#doctorants tbody');
+        // Insérez les données dans le tableau
+        for (const row of data) {
+            const tr = document.createElement('tr');
+
+            const td = document.createElement('td');
+            const a = document.createElement("a");
+            var name = row.replace('http://dbpedia.org/resource/', '');
+            name = encodeURIComponent(name);
+            a.href = "scientist.html?scientist_name="+name;
+            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+            td.appendChild(a);
+            tr.appendChild(td);
+            tbody2.appendChild(tr);
+        } 
+    }
+    
 }
