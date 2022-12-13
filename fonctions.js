@@ -17,7 +17,7 @@ function rechercherNom(name) {
                               PREFIX dbpedia: <http://dbpedia.org/>
                               PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                               \n
-                              SELECT ?p ?name ?resume ?birthday GROUP_CONCAT(DISTINCT ?discipline; separator = ", ") WHERE {
+                              SELECT ?p ?name ?resume ?birthday (GROUP_CONCAT(DISTINCT ?discipline; separator = ", ") AS ?disciplines) WHERE {
                               ?p foaf:name ?name .
                               ?p dbo:abstract ?resume .
                               ?p dbo:birthDate ?birthday .
