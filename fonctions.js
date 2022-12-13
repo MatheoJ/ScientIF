@@ -250,15 +250,21 @@ function afficherResultats(data) {
   data.results.bindings.forEach(r => {
     disciplines = r.disciplines.value.split(", ");
     contenuTableau +=
-      `<div class='col-3 mb-3'>
+      `<div class='col mb-3'>
         <div class='card'>
           <!-- <img src="..." class="card-img-top" alt="..."> -->
           <div class='card-body'>
-            <h5 class='card-title text-center'> ${r.name.value} </h5>
+            <h5 class='card-title text-center'>
+              <a class="link-dark text-decoration-none" href="scientist.html?scientist_name=${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}">${r.name.value}</a>
+            </h5>
             <div class="card-subtitle mb-2 text-center">`;
       disciplines.forEach(element => {
         contenuTableau += 
-          `<span class="badge bg-secondary text-light mx-1">${element}</span>`;
+          `<span class="badge bg-secondary mx-1">
+            <a href="domaine.html?domain_name=${element.replaceAll(" ", "_")}" class="link-light">
+            ${element}
+            </a>
+          </span>`;
       });      
       contenuTableau +=
             `</div>
