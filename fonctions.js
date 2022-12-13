@@ -181,7 +181,7 @@ function rechercherTout(sujet, predicat, objet, callback) {
         //alert("Requête effectuée");
     });
 });
-}
+}*/
 
 
 function rechercherScientifique(objet, callback){
@@ -239,48 +239,6 @@ function rechercherScientifique(objet, callback){
 
 // Affichage des résultats dans un tableau
 function afficherResultats(data) {
-  // Tableau pour mémoriser l'ordre des variables ; sans doute pas nécessaire
-  // pour vos applications, c'est juste pour la démo sous forme de tableau
-  var index = [];
-
-  console.log(data);
-
-  var contenuTableau = "";
-
-
-  data.results.bindings.forEach(r => {
-    //contenuTableau += "<tr>";
-
-      contenuTableau += 
-          "<div class='col'>"
-          + "<div class='card'>"
-            //<img src="..." class="card-img-top" alt="...">
-            + "<div class='card-body'>"
-              + "<h5 class='card-title'>"+r.name.value+"</h5>"
-              //+ "<p class='card-text'>"+r.birthDate.value+"</p>"
-              + "<a href='"+r.p.value+"' class='btn btn-primary stretched-link' target='_blank'>DBpedia</a>"
-            + "</div>"
-          + "</div>"
-        + "</div>"
-/*
-      index.forEach(v => {
-        if (r[v]) {
-          if (r[v].type === "uri") {
-            contenuTableau += "<td><a href='" + r[v].value + "' target='_blank'>" + r[v].value + "</a></td>";
-          }
-          else {
-            contenuTableau += "<td>" + r[v].value + "</td>";
-          }
-        }
-        else {
-          contenuTableau += "<td></td>";
-        }
-      });
-  });
-}*/
-
-// Affichage des résultats dans un tableau
-function afficherResultats(data) {
   // Tableau pour mémoriser l'ordre des variables
   console.log(data);
 
@@ -298,7 +256,7 @@ function afficherResultats(data) {
             <h6 class="card-subtitle mb-2 text-muted">`;
       disciplines.forEach(element => {
         contenuTableau += 
-          `<span class="badge bg-secondary">${element.value}</span>`;
+          `<span class="badge bg-secondary">${element}</span>`;
       });      
       contenuTableau +=
             `</h6>
@@ -311,4 +269,4 @@ function afficherResultats(data) {
   
   $("#zone-resultats-recherche").html(contenuTableau);
   activerCollapsibleTexts();
-  }
+}
