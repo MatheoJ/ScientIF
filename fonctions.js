@@ -23,9 +23,9 @@ function rechercherNom(name) {
                               ?p dbo:birthDate ?birthday .
                               ?p dbo:academicDiscipline ?discipline .
                               ?discipline rdfs:label ?nomDiscipline .
-                              FILTER CONTAINS(?name, "`;
+                              FILTER CONTAINS(lcase(?name), lcase("`;
   var contenu_requete = name;
-  var fin_requete = `")
+  var fin_requete = `"))
                     FILTER LANGMATCHES(lang(?resume), 'en')
                     FILTER LANGMATCHES(lang(?nomDiscipline), 'en')
                     }`;
@@ -254,16 +254,22 @@ function afficherResultats(data) {
         <div class='card'>
           <!-- <img src="..." class="card-img-top" alt="..."> -->
           <div class='card-body'>
-            <h5 class='card-title'> ${r.name.value} </h5>
-            <h6 class="card-subtitle mb-2 text-muted">`;
+            <h5 class='card-title text-center'> ${r.name.value} </h5>
+            <div class="card-subtitle mb-2 text-center">`;
       disciplines.forEach(element => {
         contenuTableau += 
-          `<span class="badge bg-secondary">${element}</span>`;
+          `<span class="badge bg-secondary mx-1">
+            <a href="domaine.html?domain_name=${element.replaceAll(" ", "_")}" class="text-light">
+            ${element}
+            </a>
+          </span>`;
       });      
       contenuTableau +=
-            `</h6>
+            `</div>
             <p class='card-text'><span class='more'> ${r.resume.value} </span></p>
-            <a href='${r.p.value}' class='btn btn-primary stretched-link' target='_blank'>DBpedia</a>
+            <div class="text-center">
+              <a href='${r.p.value}' class='btn btn-primary' target='_blank'>DBpedia</a>
+            </div>
           </div>
         </div>
        </div>`
