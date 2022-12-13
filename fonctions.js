@@ -254,16 +254,18 @@ function afficherResultats(data) {
         <div class='card'>
           <!-- <img src="..." class="card-img-top" alt="..."> -->
           <div class='card-body'>
-            <h5 class='card-title'> ${r.name.value} </h5>
-            <h6 class="card-subtitle mb-2 text-muted">`;
+            <h5 class='card-title text-center'> ${r.name.value} </h5>
+            <div class="card-subtitle mb-2 text-center">`;
       disciplines.forEach(element => {
         contenuTableau += 
-          `<span class="badge bg-secondary">${element}</span>`;
+          `<span class="badge bg-secondary text-light mx-1">${element}</span>`;
       });      
       contenuTableau +=
-            `</h6>
+            `</div>
             <p class='card-text'><span class='more'> ${r.resume.value} </span></p>
-            <a href='${r.p.value}' class='btn btn-primary stretched-link' target='_blank'>DBpedia</a>
+            <div class="text-center">
+              <a href='${r.p.value}' class='btn btn-primary' target='_blank'>DBpedia</a>
+            </div>
           </div>
         </div>
        </div>`
