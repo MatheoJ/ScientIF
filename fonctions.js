@@ -20,12 +20,9 @@ function rechercherNom(name) {
                               SELECT * WHERE {
                               ?p foaf:name ?name .
                               ?p dbo:abstract ?resume .
-                              ?p dbo:birthDate ?birthday .
-                              ?p dbp:field ?field .
-                              FILTER CONTAINS(?name, "`;
+                              FILTER(?name = "`;
   var contenu_requete = name;
-  var fin_requete = `")
-                    FILTER LANGMATCHES(lang(?resume), 'en')
+  var fin_requete = `"@en)
                     }`;
 
   var requete = debut_requete + contenu_requete + fin_requete;
@@ -185,48 +182,34 @@ function rechercherTout(sujet, predicat, objet, callback) {
 
 // Affichage des résultats dans un tableau
 function afficherResultats(data) {
-  // Tableau pour mémoriser l'ordre des variables ; sans doute pas nécessaire
-  // pour vos applications, c'est juste pour la démo sous forme de tableau
-  var index = [];
-
+  // Tableau pour mémoriser l'ordre des variables
   console.log(data);
 
   var contenuTableau = "";
 
 
   data.results.bindings.forEach(r => {
-    //contenuTableau += "<tr>";
-
+    disciplines = r.disciplines.value.split(", ");
     contenuTableau +=
-      "<div class='col-3 mb-3'>"
-      + "<div class='card'>"
-      //<img src="..." class="card-img-top" alt="...">
-      + "<div class='card-body'>"
-      + "<h5 class='card-title'>" + r.name.value + "</h5>"
-      + "<p class='card-text'><span class='more'>"+r.resume.value+"</span></p>"
-      + "<a href='" + r.p.value + "' class='btn btn-primary stretched-link' target='_blank'>DBpedia</a>"
-      + "</div>"
-      + "</div>"
-      + "</div>"
-    /*
-          index.forEach(v => {
-            if (r[v]) {
-              if (r[v].type === "uri") {
-                contenuTableau += "<td><a href='" + r[v].value + "' target='_blank'>" + r[v].value + "</a></td>";
-              }
-              else {
-                contenuTableau += "<td>" + r[v].value + "</td>";
-              }
-            }
-            else {
-              contenuTableau += "<td></td>";
-            }
-          });
-    
-          contenuTableau += "</tr>";*/
+      `<div class='col-3 mb-3'>
+        <div class='card'>
+          <!-- <img src="..." class="card-img-top" alt="..."> -->
+          <div class='card-body'>
+            <h5 class='card-title'> ${r.name.value} </h5>
+            <h6 class="card-subtitle mb-2 text-muted">`;
+      disciplines.forEach(element => {
+        contenuTableau += 
+          `<span class="badge bg-secondary">${element}</span>`;
+      });      
+      contenuTableau +=
+            `</h6>
+            <p class='card-text'><span class='more'> ${r.resume.value} </span></p>
+            <a href='${r.p.value}' class='btn btn-primary stretched-link' target='_blank'>DBpedia</a>
+          </div>
+        </div>
+       </div>`
   });
   
-    //contenuTableau += "</tr>";
-    $("#zone-resultats-recherche").html(contenuTableau);
-    activerCollapsibleTexts();
+  $("#zone-resultats-recherche").html(contenuTableau);
+  activerCollapsibleTexts();
   }
