@@ -24,7 +24,8 @@ function rechercherNom(name) {
                               ?p dbo:academicDiscipline ?discipline .
                               FILTER CONTAINS(?name, "`;
   var contenu_requete = name;
-  var fin_requete = `"@en)
+  var fin_requete = `")
+                    FILTER LANGMATCHES(lang(?resume), 'en')
                     }`;
 
   var requete = debut_requete + contenu_requete + fin_requete;
@@ -201,7 +202,7 @@ function afficherResultats(data) {
             <h6 class="card-subtitle mb-2 text-muted">`;
       disciplines.forEach(element => {
         contenuTableau += 
-          `<span class="badge bg-secondary">${element}</span>`;
+          `<span class="badge bg-secondary">${element.value}</span>`;
       });      
       contenuTableau +=
             `</h6>
