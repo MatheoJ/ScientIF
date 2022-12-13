@@ -44,7 +44,8 @@ function rechercherNom(name) {
 
       //Le format de réponse attendu
       dataType: "json",
-      data: { query: requete }
+      data: { query: requete },
+      beforeSend: afficherChargement()
     })
 
       /*Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done().
@@ -331,6 +332,11 @@ function afficherResultats(data) {
        </div>`
   });
   
-  $("#zone-resultats-recherche").html(contenuTableau);
+  if(contenuTableau == "") {
+    $("#zone-resultats-recherche").html("Aucun résultat.");
+  }
+  else {
+    $("#zone-resultats-recherche").html(contenuTableau);
+  }
   activerCollapsibleTexts();
 }
