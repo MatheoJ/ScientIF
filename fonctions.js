@@ -258,7 +258,11 @@ function afficherResultats(data) {
             <div class="card-subtitle mb-2 text-center">`;
       disciplines.forEach(element => {
         contenuTableau += 
-          `<span class="badge bg-secondary text-light mx-1">${element}</span>`;
+          `<span class="badge bg-secondary mx-1">
+            <a href="domaine.html?domain_name=${element.replaceAll(" ", "_")}" class="text-light">
+            ${element}
+            </a>
+          </span>`;
       });      
       contenuTableau +=
             `</div>
