@@ -44,7 +44,8 @@ function rechercherNom(name) {
 
       //Le format de réponse attendu
       dataType: "json",
-      data: { query: requete }
+      data: { query: requete },
+      beforeSend: afficherChargement()
     })
 
       /*Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done().
@@ -239,6 +240,17 @@ function rechercherScientifique(objet, callback){
   });
 }
 
+function afficherChargement() {
+  $("#zone-resultats-recherche").html(
+  ` <div>
+    <div class="spinner-border spinner-border-sm" role="status">
+     <span class="visually-hidden">Chargement...</span>
+    </div>
+    Chargement...
+    </div>`);
+
+}
+
 // Affichage des résultats dans un tableau
 function afficherResultats(data) {
   // Tableau pour mémoriser l'ordre des variables
@@ -277,6 +289,11 @@ function afficherResultats(data) {
        </div>`
   });
   
-  $("#zone-resultats-recherche").html(contenuTableau);
+  if(contenuTableau == "") {
+    $("#zone-resultats-recherche").html("Aucun résultat.");
+  }
+  else {
+    $("#zone-resultats-recherche").html(contenuTableau);
+  }
   activerCollapsibleTexts();
 }
