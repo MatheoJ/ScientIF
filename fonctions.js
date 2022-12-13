@@ -17,15 +17,17 @@ function rechercherNom(name) {
                               PREFIX dbpedia: <http://dbpedia.org/>
                               PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                               \n
-                              SELECT ?p ?name ?resume ?birthday (GROUP_CONCAT(DISTINCT ?discipline; separator = ", ") AS ?disciplines) WHERE {
+                              SELECT ?p ?name ?resume ?birthday (GROUP_CONCAT(DISTINCT ?nomDiscipline; separator = ", ") AS ?disciplines) WHERE {
                               ?p foaf:name ?name .
                               ?p dbo:abstract ?resume .
                               ?p dbo:birthDate ?birthday .
                               ?p dbo:academicDiscipline ?discipline .
+                              ?discipline rdfs:label ?nomDiscipline .
                               FILTER CONTAINS(?name, "`;
   var contenu_requete = name;
   var fin_requete = `")
                     FILTER LANGMATCHES(lang(?resume), 'en')
+                    FILTER LANGMATCHES(lang(?nomDiscipline), 'en')
                     }`;
 
   var requete = debut_requete + contenu_requete + fin_requete;
