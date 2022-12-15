@@ -252,11 +252,12 @@ function rechercherInventeur(sujet, callback){
                           PREFIX dbpedia: <http://dbpedia.org/>
                           PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                           \n
-                          SELECT ?o WHERE {
+                          SELECT ?o, (COUNT(?p) as ?count) WHERE {
                           ${sujet} dbo:wikiPageWikiLink ?o.
                           ?o rdf:type foaf:Person.               
-                          
+                          ?o dbo:wikiPageWikiLink ?p.
                           }
+                          ORDER BY desc(?count)
                           `;
 
   // Encodage de l'URL à transmettre à DBPedia
