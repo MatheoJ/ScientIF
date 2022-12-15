@@ -1,0 +1,100 @@
+<%- include ('header') %>
+
+
+<div class="container mt-5">
+
+    <h1 id="titre"></h1>
+    <div class="row">
+      <div class="col-auto">
+        <img id="image" />
+        <p id="image-chargement"></p>
+      </div>
+      <div class="col">
+        <p id="resume"></p>
+        <a id="pageWikipedia">Pour en savoir plus...</a>
+      </div>
+    </div>
+    
+    
+    <h2>Informations supplémentaires</h2>
+
+    <div style="max-height: 300px; overflow: scroll;"> 
+      <table class="table table-bordered table-hover" id="scientifiques">
+        <thead class="header-sticky">
+          <tr>
+            <th>Noms des scientifiques avec le même champ d'étude</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+</div>
+
+<script>
+    <% if (locals.domain_name) { %>
+        let domain = '<%= locals.domain_name %>';
+        console.log(domain);
+        rechercherTout("dbr:"+domain, "rdfs:label", null, function(response){
+        var titre = document.querySelector('#titre');
+        var nomPage = document.querySelector("#nomPage");
+        var element = response.results.bindings.find(obj => obj.o["xml:lang"] === "en");
+        titre.innerHTML = nomPage.innerHTML = element.o.value;
+        });
+
+        rechercherTout("dbr:"+domain, "foaf:isPrimaryTopicOf", null, function(response){
+        console.log(response);
+        var lien = document.querySelector('#pageWikipedia');
+        lien.setAttribute("href", response.results.bindings[0].o.value);
+        });
+        rechercherTout("dbr:"+domain, "dbo:abstract", null, function(response){
+        console.log("titre : ",response);
+        var resume = document.querySelector('#resume');
+        var element = response.results.bindings.find(obj => obj.o["xml:lang"] === "en");
+        resume.innerHTML = element.o.value;
+        });
+        afficherChargement($("#image-chargement"), "Chargement de l'image");
+        rechercherTout("dbr:"+domain, "dbo:thumbnail", null, function(response){
+        if(response.results.bindings != undefined && response.results.bindings.length > 0) {
+            var image = document.querySelector('#image');
+            image.setAttribute("src", response.results.bindings[0].o.value);
+            $("#image-chargement").html('');
+        }
+        else {
+            $("#image-chargement").html('Aucune image trouvée.');
+        }
+        });
+
+        rechercherScientifique("dbr:"+domain, function (response) {
+        var input = response.results.bindings;
+        console.log("oui", response);
+        var data = input.map(function(item) {
+            return item.s.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+        });
+        // Récupérez l'élément <tbody>
+        const tbody = document.querySelector('#scientifiques tbody');
+        // Insérez les données dans le tableau
+        for (const row of data) {
+            const tr = document.createElement('tr');
+
+            const td = document.createElement('td');
+            const a = document.createElement("a");
+            a.href = "scientist?scientist_name="+row.replaceAll(' ','_');
+            a.innerHTML = row;
+            td.appendChild(a);
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        }
+        });
+    <% } %>
+    // Get the query string from the URL
+    //var searchParams = new URLSearchParams(window.location.search);
+    // Get the value of the "param1" parameter
+    //var domain = searchParams.get("domain_name");
+    // Do something with the value of the parameter
+    
+
+  </script>
+
+
+<%- include ('footer') %>

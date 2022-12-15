@@ -13,7 +13,7 @@
                            class="form-control" 
                            placeholder="Isaac Newton..." 
                            aria-label="Nom de scientifique" 
-                           <% if(mot_cle) { %> value="<%= mot_cle %>" <% } %>
+                           <% if(locals.mot_cle) { %> value="<%= mot_cle %>" <% } %>
                            >
                     <button id="bouton-recherche" class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
                 </div>
@@ -22,7 +22,7 @@
     </div>
     <div class="row">
         <table class="table" id="resultats">
-            
+
         </table>
     </div>
     <!-- Résultats de la requête -->
@@ -31,5 +31,59 @@
     </div>
     
 </div>
+
+<script>
+    $("#mot_cle").keyup(function(event){
+        if(event.keyCode == 13){
+            $("#bouton-recherche").click();
+        }
+    });
+    function activerCollapsibleTexts() {
+        // Configure/customize these variables.
+        var showChar = 100;  // How many characters are shown by default
+        var ellipsestext = "...";
+        var moretext = "Voir plus >";
+        var lesstext = "Voir moins";
+
+
+        $('.more').each(function() {
+            var content = $(this).html();
+
+            if(content.length > showChar) {
+
+                var c = content.substr(0, showChar);
+                var h = content.substr(showChar, content.length - showChar);
+
+                var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span style="display: none;">' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+
+                $(this).html(html);
+            }
+
+        });
+
+        $(".morelink").click(function(){
+            if($(this).hasClass("less")) {
+                $(this).removeClass("less");
+                $(this).html(moretext);
+            } else {
+                $(this).addClass("less");
+                $(this).html(lesstext);
+            }
+            $(this).parent().prev().toggle();
+            $(this).prev().toggle();
+            return false;
+        });
+    }
+
+    function lancerRecherche() {
+        rechercher(document.getElementById('mot_cle').value);
+    }
+
+    $(document).ready(function() {
+        <% if (locals.mot_cle) { %>
+            lancerRecherche();
+        <% } %>
+    });
+</script>
 
 <%- include ('footer') %>
