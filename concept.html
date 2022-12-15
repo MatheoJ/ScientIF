@@ -79,7 +79,7 @@
                 <table class="table table-bordered table-hover" id="concepts">
                     <thead>
                         <tr>
-                            <th>Concepts related to this concept</th>
+                            <th>Other concepts related</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -119,9 +119,14 @@
     });
     rechercherInventeur("dbr:" + domain, function (response) {
         var input = response.results.bindings;
-        var data = input.map(function (item) {
-            return item.o.value.replace('http://dbpedia.org/resource/', '').replace('_', ' ');
-        });
+        var data = input.map(item => {
+                                        if (item.p2) {
+                                            return item.p2.value.split("/").pop();
+                                        } else if (item.o) {
+                                            return item.o.value.split("/").pop();
+                                        }
+                                        });
+        data = Array.from(new Set(data));
         // Récupérez l'élément <tbody>
         const tbody = document.querySelector('#scientifiques tbody');
         // Insérez les données dans le tableau

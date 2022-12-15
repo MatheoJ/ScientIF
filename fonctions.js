@@ -252,10 +252,20 @@ function rechercherInventeur(sujet, callback){
                           PREFIX dbpedia: <http://dbpedia.org/>
                           PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                           \n
-                          SELECT ?o, (COUNT(?p) as ?count) WHERE {
-                          ${sujet} dbo:wikiPageWikiLink ?o.
-                          ?o rdf:type foaf:Person.               
-                          ?o dbo:wikiPageWikiLink ?p.
+                          SELECT ?o, ?p2, (COUNT(?p) as ?count) WHERE {
+                            {
+                              ${sujet} dbo:wikiPageWikiLink ?o.
+                              ?o rdf:type foaf:Person.               
+                              ?o dbo:wikiPageWikiLink ?p.
+                            }
+                            UNION
+                            {
+                              ${sujet} dbo:wikiPageWikiLink ?o1.
+                              ?o1 dbo:wikiPageRedirects ?p2.
+                              ?p2 rdf:type foaf:Person.               
+                              ?p2 dbo:wikiPageWikiLink ?p.
+                              FILTER(?p2 != ?o1)
+                            }
                           }
                           ORDER BY desc(?count)
                           `;
