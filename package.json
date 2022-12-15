@@ -11,6 +11,8 @@
     "url": "https://gitlab.com/Yoaaaaaaaann/scient_if_ique.git"
   },
   "dependencies": {
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
     "nodemon": "latest"
   }
 }

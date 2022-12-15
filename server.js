@@ -1,6 +1,27 @@
 /*server.js*/
 
+let express = require('express')
+let app = express()
 
+app.set('view engine', 'ejs')
+
+// Middleware
+app.use('/assets', express.static('public'))
+app.use(require('./middlewares/requetes'))
+
+// Routes
+app.get('/', (request, response) => {
+  if (request.query.mot_cle) {
+    response.render('pages/index', {mot_cle: request.query.mot_cle})
+  }
+  else {
+    response.render('pages/index')
+  }
+})
+
+app.listen(80)
+
+/*
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
@@ -45,3 +66,4 @@ server.listen(port, hostname, function() {
   console.log('Server running at http://'+ hostname + ':' + port + '/');
 
 });
+*/

@@ -1,0 +1,35 @@
+
+
+<%- include ('header') %>
+
+<div class="container mt-5">
+    <div class="row justify-content-center mb-5">
+        <div class="col-3 justify-content-center">
+            <form action="#" method="get">
+                <div class="input-group">
+                    <input type="text" 
+                           id="mot_cle" 
+                           name="mot_cle" 
+                           class="form-control" 
+                           placeholder="Isaac Newton..." 
+                           aria-label="Nom de scientifique" 
+                           <% if(mot_cle) { %> value="<%= mot_cle %>" <% } %>
+                           >
+                    <button id="bouton-recherche" class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table" id="resultats">
+            
+        </table>
+    </div>
+    <!-- Résultats de la requête -->
+    <div id="zone-resultats-recherche" class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-sm-2 row-cols-xl-5 g-4">
+        
+    </div>
+    
+</div>
+
+<%- include ('footer') %>
