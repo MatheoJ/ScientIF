@@ -27,8 +27,19 @@ app.get('/domaine', (request, response) => {
   response.redirect('/');
 })
 
+app.get('/scientist', (request, response) => {
+  response.redirect('/');
+})
+
 app.get('/domaine/:domain_name', (request, response) => {
   response.render('pages/domaine', {domain_name: request.params.domain_name})
+  /*Requetes.rechercherNom(request.query.mot_cle, function() {
+
+  })*/
+})
+
+app.get('/scientist/:scientist_name', (request, response) => {
+  response.render('pages/scientist', {scientist_name: request.params.scientist_name})
   /*Requetes.rechercherNom(request.query.mot_cle, function() {
 
   })*/

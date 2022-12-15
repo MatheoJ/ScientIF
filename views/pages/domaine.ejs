@@ -79,7 +79,7 @@
 
             const td = document.createElement('td');
             const a = document.createElement("a");
-            a.href = "scientist?scientist_name="+row.replaceAll(' ','_');
+            a.href = "/scientist/"+row.replaceAll(' ','_');
             a.innerHTML = row;
             td.appendChild(a);
             tr.appendChild(td);
