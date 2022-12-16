@@ -105,7 +105,7 @@ function afficherScientist(response)
     if(response.results.bindings[0].hasOwnProperty("conjoint")){
         var lien = document.querySelector('#conjoint');
         var conjointLien = response.results.bindings[0].conjoint.value;
-        lien.setAttribute("href", "scientist.html?scientist_name="+conjointLien.replace('http://dbpedia.org/resource/', ''));
+        lien.setAttribute("href", "/scientist/"+conjointLien.replace('http://dbpedia.org/resource/', ''));
         lien.innerHTML =response.results.bindings[0].conjoint.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
         
     } 
@@ -119,7 +119,7 @@ function afficherScientist(response)
 
             const td = document.createElement('td');
             const a = document.createElement("a");
-            a.href = "domaine.html?domain_name="+row.replace('http://dbpedia.org/resource/', '');
+            a.href = "/domaine/"+row.replace('http://dbpedia.org/resource/', '');
             a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
             td.appendChild(a);
             tr.appendChild(td);
@@ -139,7 +139,7 @@ function afficherScientist(response)
             const a = document.createElement("a");
             var name = row.replace('http://dbpedia.org/resource/', '');
             name = encodeURIComponent(name);
-            a.href = "scientist.html?scientist_name="+name;
+            a.href = "/scientist/"+name;
             a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
             td.appendChild(a);
             tr.appendChild(td);

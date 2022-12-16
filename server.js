@@ -1,6 +1,53 @@
 /*server.js*/
 
+let express = require('express')
+const Requetes = require('./middlewares/requetes')
+let app = express()
 
+app.set('view engine', 'ejs')
+
+// Middleware
+app.use('/assets', express.static('public'))
+//app.use(require('./middlewares/requetes'))
+
+// Routes
+app.get('/', (request, response) => {
+  if (request.query.mot_cle) {
+    response.render('pages/index', {mot_cle: request.query.mot_cle})
+    /*Requetes.rechercherNom(request.query.mot_cle, function() {
+
+    })*/
+  }
+  else {
+    response.render('pages/index')
+  }
+})
+
+app.get('/domaine', (request, response) => {
+  response.redirect('/');
+})
+
+app.get('/scientist', (request, response) => {
+  response.redirect('/');
+})
+
+app.get('/domaine/:domain_name', (request, response) => {
+  response.render('pages/domaine', {domain_name: request.params.domain_name})
+  /*Requetes.rechercherNom(request.query.mot_cle, function() {
+
+  })*/
+})
+
+app.get('/scientist/:scientist_name', (request, response) => {
+  response.render('pages/scientist', {scientist_name: request.params.scientist_name})
+  /*Requetes.rechercherNom(request.query.mot_cle, function() {
+
+  })*/
+})
+
+app.listen(80)
+
+/*
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
@@ -45,3 +92,4 @@ server.listen(port, hostname, function() {
   console.log('Server running at http://'+ hostname + ':' + port + '/');
 
 });
+*/
