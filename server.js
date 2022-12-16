@@ -45,6 +45,13 @@ app.get('/scientist/:scientist_name', (request, response) => {
   })*/
 })
 
+app.get('/concept/:concept_name', (request, response) => {
+  response.render('pages/concept', {concept_name: request.params.concept_name})
+  /*Requetes.rechercherNom(request.query.mot_cle, function() {
+
+  })*/
+})
+
 app.listen(80)
 
 /*
