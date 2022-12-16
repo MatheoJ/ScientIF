@@ -23,22 +23,29 @@ function rechercherScientist(scientistName){
         SELECT GROUP_CONCAT(DISTINCT ?discipline;separator =";") AS ?disciplines 
         GROUP_CONCAT(DISTINCT ?doctoralStudent;separator =";") AS ?doctoralStudents
         GROUP_CONCAT(DISTINCT ?concept;separator =";") AS ?concepts
+        GROUP_CONCAT(DISTINCT ?award;separator =";") AS ?awards
         ?name 
         ?description 
         ?conjoint 
         ?isPrimaryTopicOf 
         ?thumbnail 
-        ?date WHERE {
+        ?date
+        ?conjointScientist
+        ?birthPlace WHERE {
             
             :${scientistName} rdfs:label ?name.
             OPTIONAL{:${scientistName} dbo:academicDiscipline ?discipline}
             OPTIONAL{:${scientistName} dbo:birthDate ?date}
             OPTIONAL{:${scientistName} dbo:abstract ?description}
+            OPTIONAL{:${scientistName} dbo:spouse ?conjointScientist.
+                    ?conjointScientist rdf:type dbo:Scientist}
             OPTIONAL{:${scientistName} dbo:spouse ?conjoint}
             OPTIONAL{:${scientistName} foaf:isPrimaryTopicOf ?isPrimaryTopicOf}
             OPTIONAL{:${scientistName} dbo:thumbnail ?thumbnail}
             OPTIONAL{:${scientistName} dbo:doctoralStudent ?doctoralStudent}
             OPTIONAL{:${scientistName} dbo:knownFor ?concept}
+            OPTIONAL{:${scientistName} dbo:award ?award}
+            OPTIONAL{:${scientistName} dbo:birthPlace ?birthPlace}
             FILTER(langMatches(lang(?description),"EN"))
             FILTER(langMatches(lang(?name),"EN"))
         }`;
@@ -107,24 +114,36 @@ function afficherScientist(response)
         var image = document.querySelector('#image');
         image.setAttribute("src", response.results.bindings[0].thumbnail.value);
         image.onerror = function (){
-            document.getElementById("image").style.display = "none";
+            image.setAttribute("src", "/assets/img/scientist.ico");
         }
     } else{
-        document.getElementById("image").style.display = "none";
+        document.querySelector('#image').setAttribute("src", "/assets/img/scientist.ico");
     }
     if(response.results.bindings[0].hasOwnProperty("date")){
         var date = document.querySelector('#dateNaissance');
         date.innerHTML= "Né.e le :"+response.results.bindings[0].date.value;
-    } else{
+    } 
+    else{
         document.getElementById("dateNaissance").style.display = "none";
     }
-    if(response.results.bindings[0].hasOwnProperty("conjoint")){
+    if(response.results.bindings[0].hasOwnProperty("birthPlace")){
+        var date = document.querySelector('#birthPlaveValue');
+        date.innerHTML= "Lieu de naissance: "+response.results.bindings[0].birthPlace.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+    }
+    else{
+        document.getElementById("birthPlaveValue").style.display = "none";
+    }
+    if(response.results.bindings[0].hasOwnProperty("conjointScientist")){
         var lien = document.querySelector('#conjoint');
-        var conjointLien = response.results.bindings[0].conjoint.value;
+        var conjointLien = response.results.bindings[0].conjointScientist.value;
         lien.setAttribute("href", "/scientist/"+conjointLien.replace('http://dbpedia.org/resource/', ''));
-        lien.innerHTML =response.results.bindings[0].conjoint.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+        lien.innerHTML =response.results.bindings[0].conjointScientist.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
         
-    } else{
+    } else if (response.results.bindings[0].hasOwnProperty("conjoint")){
+        var lien = document.querySelector('#conjoint');
+        lien.innerHTML =response.results.bindings[0].conjoint.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+    } 
+    else{
         document.getElementById("conjointDiv").style.display = "none";
     }
     if(response.results.bindings[0].disciplines.value != ''){        
@@ -187,6 +206,25 @@ function afficherScientist(response)
         }
     } else {
         document.getElementById("concepts").style.display = "none";
+    }
+    if(response.results.bindings[0].awards.value != ''){        
+        var data = response.results.bindings[0].awards.value.split(';');
+        // Récupérez l'élément <tbody>
+        const tbody = document.querySelector('#awards tbody');
+        // Insérez les données dans le tableau
+        for (const row of data) {
+            const tr = document.createElement('tr');
+
+            const td = document.createElement('td');
+            const a = document.createElement("a");
+            console.log(row);
+            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+            td.appendChild(a);
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        }
+    } else {
+        document.getElementById("awards").style.display = "none";
     }
     
 }
