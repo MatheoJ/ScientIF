@@ -394,7 +394,7 @@ function cacherChargement(zone) {
 }
 
 // Affichage des résultats dans un tableau
-function afficherResultats(data, idTableau = "#zone-resultats-recherche", afficherDescription = true, typeRecherche) {
+function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-recherche", afficherDescription = true) {
   // Tableau pour mémoriser l'ordre des variables
   console.log(data);
 
