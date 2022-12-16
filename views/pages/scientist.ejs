@@ -1,6 +1,7 @@
 <%- include ('header') %>
 
 <div class="container mt-5">
+    <p id="p-spin-chargement"></p>
     <h1 id="titre"></h1>
     <div class="row">
       <div class="col-auto">
@@ -85,7 +86,11 @@
     <% if (locals.scientist_name) { %>
         let scientist = '<%= locals.scientist_name %>';
         //console.log(scientist);
-        rechercherScientist(scientist);
+        afficherChargement($("#p-spin-chargement"), "Chargement")
+        rechercherScientist(scientist, function(response) {
+          afficherScientist(response);
+          cacherChargement($("#p-spin-chargement"));
+        });
     <% } %>
   </script>
   <!-- Johann_Rafelski-->

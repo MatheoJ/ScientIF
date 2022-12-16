@@ -376,6 +376,10 @@ function afficherChargement(zone, texte) {
     </div>`);
 
 }
+function cacherChargement(zone) {
+  zone.html('');
+
+}
 
 // Affichage des résultats dans un tableau
 function afficherResultats(data, idTableau = "#zone-resultats-recherche", afficherDescription = true) {

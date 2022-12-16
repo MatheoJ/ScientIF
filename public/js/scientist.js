@@ -1,4 +1,4 @@
-function rechercherScientist(scientistName){
+function rechercherScientist(scientistName, callback){
 
     
     decodeURIComponent(scientistName);
@@ -71,8 +71,7 @@ function rechercherScientist(scientistName){
         * cette chaine dans un div id="res"*/
         .done(function(response){
             console.log(response);
-            afficherScientist(response);
-            
+            callback(response);
         })
   
         //Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()

@@ -114,7 +114,7 @@ class Requetes {
             let indice = Math.floor(Math.random() * response.results.bindings.length); 
             let valeur = response.results.bindings[indice].p.value
             let valeur_substring = valeur.substring(valeur.lastIndexOf("/")+1)
-            console.log(valeur_substring)
+            //console.log(valeur_substring)
             // let data = (response);
             //afficherResultats(response);
             cb(valeur_substring)
