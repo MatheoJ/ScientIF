@@ -107,10 +107,10 @@ function afficherScientist(response)
         var image = document.querySelector('#image');
         image.setAttribute("src", response.results.bindings[0].thumbnail.value);
         image.onerror = function (){
-            document.getElementById("image").style.display = "none";
+            image.setAttribute("src", "/assets/img/scientist.ico");
         }
     } else{
-        document.getElementById("image").style.display = "none";
+        document.querySelector('#image').setAttribute("src", "/assets/img/scientist.ico");
     }
     if(response.results.bindings[0].hasOwnProperty("date")){
         var date = document.querySelector('#dateNaissance');
