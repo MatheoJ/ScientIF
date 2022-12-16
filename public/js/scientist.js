@@ -23,12 +23,14 @@ function rechercherScientist(scientistName){
         SELECT GROUP_CONCAT(DISTINCT ?discipline;separator =";") AS ?disciplines 
         GROUP_CONCAT(DISTINCT ?doctoralStudent;separator =";") AS ?doctoralStudents
         GROUP_CONCAT(DISTINCT ?concept;separator =";") AS ?concepts
+        GROUP_CONCAT(DISTINCT ?award;separator =";") AS ?awards
         ?name 
         ?description 
         ?conjoint 
         ?isPrimaryTopicOf 
         ?thumbnail 
-        ?date WHERE {
+        ?date
+        ?birthPlace WHERE {
             
             :${scientistName} rdfs:label ?name.
             OPTIONAL{:${scientistName} dbo:academicDiscipline ?discipline}
@@ -39,6 +41,8 @@ function rechercherScientist(scientistName){
             OPTIONAL{:${scientistName} dbo:thumbnail ?thumbnail}
             OPTIONAL{:${scientistName} dbo:doctoralStudent ?doctoralStudent}
             OPTIONAL{:${scientistName} dbo:knownFor ?concept}
+            OPTIONAL{:${scientistName} dbo:award ?award}
+            OPTIONAL{:${scientistName} dbo:birthPlace ?birthPlace}
             FILTER(langMatches(lang(?description),"EN"))
             FILTER(langMatches(lang(?name),"EN"))
         }`;
@@ -107,6 +111,10 @@ function afficherScientist(response)
         var date = document.querySelector('#dateNaissance');
         date.innerHTML= "Né.e le :"+response.results.bindings[0].date.value;
     } 
+    if(response.results.bindings[0].hasOwnProperty("birthPlace")){
+        var date = document.querySelector('#birthPlaveValue');
+        date.innerHTML= "Lieu de naissance: "+response.results.bindings[0].birthPlace.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+    } 
     if(response.results.bindings[0].hasOwnProperty("conjoint")){
         var lien = document.querySelector('#conjoint');
         var conjointLien = response.results.bindings[0].conjoint.value;
@@ -163,6 +171,23 @@ function afficherScientist(response)
             const a = document.createElement("a");
             console.log(row);
             a.href = "/concept/"+row.replace('http://dbpedia.org/resource/', '');
+            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+            td.appendChild(a);
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        }
+    }
+    if(response.results.bindings[0].hasOwnProperty("awards")){        
+        var data = response.results.bindings[0].awards.value.split(';');
+        // Récupérez l'élément <tbody>
+        const tbody = document.querySelector('#awards tbody');
+        // Insérez les données dans le tableau
+        for (const row of data) {
+            const tr = document.createElement('tr');
+
+            const td = document.createElement('td');
+            const a = document.createElement("a");
+            console.log(row);
             a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
             td.appendChild(a);
             tr.appendChild(td);
