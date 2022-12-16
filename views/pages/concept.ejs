@@ -1,0 +1,116 @@
+<%- include ('header') %>
+
+    <div class="container mt-5">
+
+        <h1 id="titre"></h1>
+        <div class="row">
+            <div class="col-auto">
+                <img id="image" />
+                <p id="image-chargement"></p>
+            </div>
+            <div class="col">
+                <p id="resume"></p>
+                <a id="pageWikipedia">Pour en savoir plus...</a>
+            </div>
+        </div>
+
+
+        <h2>Informations supplémentaires</h2>
+
+        <div style="max-height: 600px; overflow-y: scroll;">
+            Scientists related to this concept
+            <div class="row" id="scientifiques">
+
+            </div>
+        </div>
+
+        <div style="max-height: 300px; overflow: scroll;">
+            <table class="table table-bordered table-hover" id="concepts">
+                <thead>
+                    <tr>
+                        <th>Other concepts related</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+<script>
+    <% if (locals.concept_name) { %>
+        let domain = '<%= locals.concept_name %>';
+    rechercherTout("dbr:" + domain, "rdfs:label", null, function (response) {
+        var titre = document.querySelector('#titre');
+        var nomPage = document.querySelector("#nomPage");
+        var element = response.results.bindings.find(obj => obj.o["xml:lang"] === "en");
+        titre.innerHTML = nomPage.innerHTML = element.o.value;
+    });
+    rechercherTout("dbr:" + domain, "foaf:isPrimaryTopicOf", null, function (response) {
+        var lien = document.querySelector('#pageWikipedia');
+        lien.setAttribute("href", response.results.bindings[0].o.value);
+    });
+    rechercherTout("dbr:" + domain, "dbo:abstract", null, function (response) {
+        var resume = document.querySelector('#resume');
+        var element = response.results.bindings.find(obj => obj.o["xml:lang"] === "en");
+        resume.innerHTML = element.o.value;
+    });
+    rechercherTout("dbr:" + domain, "dbo:thumbnail", null, function (response) {
+        var image = document.querySelector('#image');
+        image.setAttribute("src", response.results.bindings[0].o.value);
+    });
+
+    rechercherInventeur("dbr:"+domain, "#scientifiques");
+    
+    /*
+    rechercherInventeur("dbr:" + domain, function (response) {
+        var input = response.results.bindings;
+        var data = input.map(item => {
+                                        if (item.p2) {
+                                            return item.p2.value.split("/").pop();
+                                        } else if (item.o) {
+                                            return item.o.value.split("/").pop();
+                                        }
+                                        });
+        data = Array.from(new Set(data));
+        // Récupérez l'élément <tbody>
+        const tbody = document.querySelector('#scientifiques tbody');
+        // Insérez les données dans le tableau
+        for (const row of data) {
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            const a = document.createElement("a");
+            a.href = "/scientist/" + row.replace(' ', '_');
+            a.innerHTML = row;
+            td.appendChild(a);
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        }
+    });
+    */
+
+    rechercherTout("dbr:" + domain, "rdfs:seeAlso", null, function (response) {
+        var input = response.results.bindings;
+        var data = input.map(function (item) {
+            return item.o.value.replace('http://dbpedia.org/resource/', '').replace('_', ' ');
+        });
+        // Récupérez l'élément <tbody>
+        const tbody = document.querySelector('#concepts tbody');
+        // Insérez les données dans le tableau
+        for (const row of data) {
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            const a = document.createElement("a");
+            a.href = "/concept/" + row.replace(' ', '_');
+            a.innerHTML = row;
+            td.appendChild(a);
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        }
+    });
+    <% } %>
+
+</script>
+
+<%- include ('footer') %>

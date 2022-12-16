@@ -45,6 +45,19 @@ app.get('/scientist/:scientist_name', (request, response) => {
   })*/
 })
 
+app.get('/concept/:concept_name', (request, response) => {
+  response.render('pages/concept', {concept_name: request.params.concept_name})
+  /*Requetes.rechercherNom(request.query.mot_cle, function() {
+
+  })*/
+})
+
+app.get('/random', (request, response) => {
+  Requetes.random(function(nom_aleatoire) {
+    response.redirect('/scientist/'+nom_aleatoire)
+  })
+})
+
 app.listen(80)
 
 /*

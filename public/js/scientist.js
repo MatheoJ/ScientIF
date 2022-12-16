@@ -1,10 +1,13 @@
-function rechercherScientist(scientistName){
+function rechercherScientist(scientistName, callback){
 
     
     decodeURIComponent(scientistName);
     scientistName = scientistName.replaceAll('(', '\\(');
     scientistName = scientistName.replaceAll(')', '\\)');
     scientistName = scientistName.replaceAll(',', '\\,');
+    scientistName = scientistName.replaceAll("&#39;", "\\'");
+  
+    //console.log(scientistName);
   var requete = `
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -19,21 +22,30 @@ function rechercherScientist(scientistName){
         \n
         SELECT GROUP_CONCAT(DISTINCT ?discipline;separator =";") AS ?disciplines 
         GROUP_CONCAT(DISTINCT ?doctoralStudent;separator =";") AS ?doctoralStudents
+        GROUP_CONCAT(DISTINCT ?concept;separator =";") AS ?concepts
+        GROUP_CONCAT(DISTINCT ?award;separator =";") AS ?awards
         ?name 
         ?description 
         ?conjoint 
         ?isPrimaryTopicOf 
         ?thumbnail 
-        ?date WHERE {
+        ?date
+        ?conjointScientist
+        ?birthPlace WHERE {
             
             :${scientistName} rdfs:label ?name.
             OPTIONAL{:${scientistName} dbo:academicDiscipline ?discipline}
             OPTIONAL{:${scientistName} dbo:birthDate ?date}
             OPTIONAL{:${scientistName} dbo:abstract ?description}
+            OPTIONAL{:${scientistName} dbo:spouse ?conjointScientist.
+                    ?conjointScientist rdf:type dbo:Scientist}
             OPTIONAL{:${scientistName} dbo:spouse ?conjoint}
             OPTIONAL{:${scientistName} foaf:isPrimaryTopicOf ?isPrimaryTopicOf}
             OPTIONAL{:${scientistName} dbo:thumbnail ?thumbnail}
             OPTIONAL{:${scientistName} dbo:doctoralStudent ?doctoralStudent}
+            OPTIONAL{:${scientistName} dbo:knownFor ?concept}
+            OPTIONAL{:${scientistName} dbo:award ?award}
+            OPTIONAL{:${scientistName} dbo:birthPlace ?birthPlace}
             FILTER(langMatches(lang(?description),"EN"))
             FILTER(langMatches(lang(?name),"EN"))
         }`;
@@ -59,8 +71,7 @@ function rechercherScientist(scientistName){
         * cette chaine dans un div id="res"*/
         .done(function(response){
             console.log(response);
-            afficherScientist(response);
-            
+            callback(response);
         })
   
         //Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
@@ -88,28 +99,53 @@ function afficherScientist(response)
     if(response.results.bindings[0].hasOwnProperty("isPrimaryTopicOf")){
         var lien = document.querySelector('#pageWikipedia');
         lien.setAttribute("href", response.results.bindings[0].isPrimaryTopicOf.value);
+    } else{
+        document.getElementById("pageWikipedia").style.display = "none";
     }
     if(response.results.bindings[0].hasOwnProperty("description")){
         var resume = document.querySelector('#resume');
         element = response.results.bindings[0].description.value;
         resume.innerHTML = element;
-    }    
+    } else{
+        document.getElementById("resume").style.display = "none";
+    }   
     if(response.results.bindings[0].hasOwnProperty("thumbnail")){
         var image = document.querySelector('#image');
         image.setAttribute("src", response.results.bindings[0].thumbnail.value);
-    }  
+        image.onerror = function (){
+            image.setAttribute("src", "/assets/img/scientist.ico");
+        }
+    } else{
+        document.querySelector('#image').setAttribute("src", "/assets/img/scientist.ico");
+    }
     if(response.results.bindings[0].hasOwnProperty("date")){
         var date = document.querySelector('#dateNaissance');
         date.innerHTML= "Né.e le :"+response.results.bindings[0].date.value;
     } 
-    if(response.results.bindings[0].hasOwnProperty("conjoint")){
+    else{
+        document.getElementById("dateNaissance").style.display = "none";
+    }
+    if(response.results.bindings[0].hasOwnProperty("birthPlace")){
+        var date = document.querySelector('#birthPlaveValue');
+        date.innerHTML= "Lieu de naissance: "+response.results.bindings[0].birthPlace.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+    }
+    else{
+        document.getElementById("birthPlaveValue").style.display = "none";
+    }
+    if(response.results.bindings[0].hasOwnProperty("conjointScientist")){
         var lien = document.querySelector('#conjoint');
-        var conjointLien = response.results.bindings[0].conjoint.value;
+        var conjointLien = response.results.bindings[0].conjointScientist.value;
         lien.setAttribute("href", "/scientist/"+conjointLien.replace('http://dbpedia.org/resource/', ''));
-        lien.innerHTML =response.results.bindings[0].conjoint.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+        lien.innerHTML =response.results.bindings[0].conjointScientist.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
         
+    } else if (response.results.bindings[0].hasOwnProperty("conjoint")){
+        var lien = document.querySelector('#conjoint');
+        lien.innerHTML =response.results.bindings[0].conjoint.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
     } 
-    if(response.results.bindings[0].hasOwnProperty("disciplines")){        
+    else{
+        document.getElementById("conjointDiv").style.display = "none";
+    }
+    if(response.results.bindings[0].disciplines.value != ''){        
         var data = response.results.bindings[0].disciplines.value.split(';');
         // Récupérez l'élément <tbody>
         const tbody = document.querySelector('#disciplines tbody');
@@ -125,8 +161,10 @@ function afficherScientist(response)
             tr.appendChild(td);
             tbody.appendChild(tr);
         }
+    }else{
+        document.getElementById("disciplines").style.display = "none";
     }
-    if(response.results.bindings[0].hasOwnProperty("doctoralStudents")){   
+    if(response.results.bindings[0].doctoralStudents.value != ''){   
 
         var data = response.results.bindings[0].doctoralStudents.value.split(';');
         // Récupérez l'élément <tbody>
@@ -145,6 +183,47 @@ function afficherScientist(response)
             tr.appendChild(td);
             tbody2.appendChild(tr);
         } 
+    } else {
+        document.getElementById("doctorants").style.display = "none";
+    }
+    if(response.results.bindings[0].concepts.value != ''){        
+        var data = response.results.bindings[0].concepts.value.split(';');
+        // Récupérez l'élément <tbody>
+        const tbody = document.querySelector('#concepts tbody');
+        // Insérez les données dans le tableau
+        for (const row of data) {
+            const tr = document.createElement('tr');
+
+            const td = document.createElement('td');
+            const a = document.createElement("a");
+            console.log(row);
+            a.href = "/concept/"+row.replace('http://dbpedia.org/resource/', '');
+            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+            td.appendChild(a);
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        }
+    } else {
+        document.getElementById("concepts").style.display = "none";
+    }
+    if(response.results.bindings[0].awards.value != ''){        
+        var data = response.results.bindings[0].awards.value.split(';');
+        // Récupérez l'élément <tbody>
+        const tbody = document.querySelector('#awards tbody');
+        // Insérez les données dans le tableau
+        for (const row of data) {
+            const tr = document.createElement('tr');
+
+            const td = document.createElement('td');
+            const a = document.createElement("a");
+            console.log(row);
+            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+            td.appendChild(a);
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        }
+    } else {
+        document.getElementById("awards").style.display = "none";
     }
     
 }

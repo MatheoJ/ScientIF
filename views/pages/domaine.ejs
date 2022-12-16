@@ -11,23 +11,19 @@
       </div>
       <div class="col">
         <p id="resume"></p>
-        <a id="pageWikipedia">Pour en savoir plus...</a>
+        <a id="pageWikipedia">More on wikipedia</a>
       </div>
     </div>
     
     
-    <h2>Informations supplémentaires</h2>
+    <h2>More informations...</h2>
+    <p>Scientists related to this domain</p>
+    <div style="max-height: 1000px; overflow: scroll;"> 
+      
+      <div class="row" id="scientifiques">
 
-    <div style="max-height: 300px; overflow: scroll;"> 
-      <table class="table table-bordered table-hover" id="scientifiques">
-        <thead class="header-sticky">
-          <tr>
-            <th>Noms des scientifiques avec le même champ d'étude</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+      </div>
+      
     </div>
 </div>
 
@@ -64,7 +60,7 @@
             $("#image-chargement").html('Aucune image trouvée.');
         }
         });
-
+        /*
         rechercherScientifique("dbr:"+domain, function (response) {
         var input = response.results.bindings;
         console.log("oui", response);
@@ -86,6 +82,9 @@
             tbody.appendChild(tr);
         }
         });
+        */
+        rechercherScientifique("dbr:"+domain, "#scientifiques");
+        
     <% } %>
     // Get the query string from the URL
     //var searchParams = new URLSearchParams(window.location.search);
