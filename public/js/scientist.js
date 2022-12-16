@@ -168,7 +168,7 @@ function afficherScientist(response)
     } else {
         document.getElementById("doctorants").style.display = "none";
     }
-    if(response.results.bindings[0].hasOwnProperty("concepts")){        
+    if(response.results.bindings[0].concepts.value != ''){        
         var data = response.results.bindings[0].concepts.value.split(';');
         // Récupérez l'élément <tbody>
         const tbody = document.querySelector('#concepts tbody');
@@ -185,6 +185,8 @@ function afficherScientist(response)
             tr.appendChild(td);
             tbody.appendChild(tr);
         }
+    } else {
+        document.getElementById("concepts").style.display = "none";
     }
     
 }
