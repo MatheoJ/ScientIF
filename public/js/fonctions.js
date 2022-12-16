@@ -266,7 +266,7 @@ function rechercherInventeur(sujet, callback){
                               ?p2 dbo:wikiPageWikiLink ?p.
                               FILTER(?p2 != ?o1)
                             }
-
+                          }
                           ORDER BY desc(?count)
                           `;
 
