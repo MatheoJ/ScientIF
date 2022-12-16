@@ -5,6 +5,9 @@ function rechercherScientist(scientistName){
     scientistName = scientistName.replaceAll('(', '\\(');
     scientistName = scientistName.replaceAll(')', '\\)');
     scientistName = scientistName.replaceAll(',', '\\,');
+    scientistName = scientistName.replaceAll("&#39;", "\\'");
+  
+    console.log(scientistName);
   var requete = `
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
