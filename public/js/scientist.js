@@ -200,7 +200,7 @@ function afficherScientist(response)
     } else {
         document.getElementById("concepts").style.display = "none";
     }
-    if(response.results.bindings[0].hasOwnProperty("awards")){        
+    if(response.results.bindings[0].awards.value != ''){        
         var data = response.results.bindings[0].awards.value.split(';');
         // Récupérez l'élément <tbody>
         const tbody = document.querySelector('#awards tbody');
@@ -216,6 +216,8 @@ function afficherScientist(response)
             tr.appendChild(td);
             tbody.appendChild(tr);
         }
+    } else {
+        document.getElementById("awards").style.display = "none";
     }
     
 }
