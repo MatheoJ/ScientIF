@@ -206,9 +206,10 @@ function rechercherDomaine(domaine) {
     .always(function(){
         //alert("Requête effectuée");
     });
-});
+  });
 }
 
+/*
 function rechercherScientifique(objet, idTableau) {
   var requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
                               PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -414,7 +415,7 @@ $(document).ready(function () {
   });
 });
 }
-
+/*
 function rechercherInventeur(sujet, idTableau) {
   var requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
                               PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -576,7 +577,7 @@ function rechercherInventeur(sujet, callback){
       });
   });
 }
-*/
+
 function afficherChargement(zone, texte) {
   zone.html(
     ` <div>
@@ -642,15 +643,16 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
           </div>
         </div>
        </div>`
-  });
-  
-  if(contenuTableau == "") {
-    $(idTableau).html("Aucun résultat.");
+    });
+    
+    if(contenuTableau == "") {
+      $(idTableau).html("Aucun résultat.");
+    }
+    else {
+      $(idTableau).html(contenuTableau);
+    }
+    activerCollapsibleTexts();
   }
-  else {
-    $(idTableau).html(contenuTableau);
-  }
-  activerCollapsibleTexts();
 }
 
 /*
