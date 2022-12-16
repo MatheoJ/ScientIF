@@ -30,12 +30,15 @@ function rechercherScientist(scientistName){
         ?isPrimaryTopicOf 
         ?thumbnail 
         ?date
+        ?conjointScientist
         ?birthPlace WHERE {
             
             :${scientistName} rdfs:label ?name.
             OPTIONAL{:${scientistName} dbo:academicDiscipline ?discipline}
             OPTIONAL{:${scientistName} dbo:birthDate ?date}
             OPTIONAL{:${scientistName} dbo:abstract ?description}
+            OPTIONAL{:${scientistName} dbo:spouse ?conjointScientist.
+                    ?conjointScientist rdf:type dbo:Scientist}
             OPTIONAL{:${scientistName} dbo:spouse ?conjoint}
             OPTIONAL{:${scientistName} foaf:isPrimaryTopicOf ?isPrimaryTopicOf}
             OPTIONAL{:${scientistName} dbo:thumbnail ?thumbnail}
@@ -130,13 +133,17 @@ function afficherScientist(response)
     else{
         document.getElementById("birthPlaveValue").style.display = "none";
     }
-    if(response.results.bindings[0].hasOwnProperty("conjoint")){
+    if(response.results.bindings[0].hasOwnProperty("conjointScientist")){
         var lien = document.querySelector('#conjoint');
-        var conjointLien = response.results.bindings[0].conjoint.value;
+        var conjointLien = response.results.bindings[0].conjointScientist.value;
         lien.setAttribute("href", "/scientist/"+conjointLien.replace('http://dbpedia.org/resource/', ''));
-        lien.innerHTML =response.results.bindings[0].conjoint.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+        lien.innerHTML =response.results.bindings[0].conjointScientist.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
         
-    } else{
+    } else if (response.results.bindings[0].hasOwnProperty("conjoint")){
+        var lien = document.querySelector('#conjoint');
+        lien.innerHTML =response.results.bindings[0].conjoint.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+    } 
+    else{
         document.getElementById("conjointDiv").style.display = "none";
     }
     if(response.results.bindings[0].disciplines.value != ''){        
