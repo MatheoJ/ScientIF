@@ -155,7 +155,7 @@ function afficherScientist(response)
 
             const td = document.createElement('td');
             const a = document.createElement("a");
-            a.href = "/domaine/"+row.replace('http://dbpedia.org/resource/', '');
+            a.href = "/domain/"+row.replace('http://dbpedia.org/resource/', '');
             a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
             td.appendChild(a);
             tr.appendChild(td);

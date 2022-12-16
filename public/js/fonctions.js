@@ -615,7 +615,7 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
         disciplines.forEach(element => {
           contenuTableau += 
             `<span class="badge bg-secondary mx-1">
-              <a href="/domaine/${element.replaceAll(" ", "_")}" class="link-light">
+              <a href="/domain/${element.replaceAll(" ", "_")}" class="link-light">
               ${element}
               </a>
             </span>`;

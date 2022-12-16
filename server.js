@@ -23,7 +23,7 @@ app.get('/', (request, response) => {
   }
 })
 
-app.get('/domaine', (request, response) => {
+app.get('/domain', (request, response) => {
   response.redirect('/');
 })
 
@@ -31,8 +31,8 @@ app.get('/scientist', (request, response) => {
   response.redirect('/');
 })
 
-app.get('/domaine/:domain_name', (request, response) => {
-  response.render('pages/domaine', {domain_name: request.params.domain_name})
+app.get('/domain/:domain_name', (request, response) => {
+  response.render('pages/domain', {domain_name: request.params.domain_name})
   /*Requetes.rechercherNom(request.query.mot_cle, function() {
 
   })*/
