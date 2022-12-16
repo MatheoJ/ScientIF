@@ -331,13 +331,13 @@ function afficherResultats(data) {
           <!-- <img src="..." class="card-img-top" alt="..."> -->
           <div class='card-body'>
             <h5 class='card-title text-center'>
-              <a class="link-dark text-decoration-none" href="scientist?scientist_name=${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}">${r.name.value}</a>
+              <a class="link-dark text-decoration-none" href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}">${r.name.value}</a>
             </h5>
             <div class="card-subtitle mb-2 text-center">`;
       disciplines.forEach(element => {
         contenuTableau += 
           `<span class="badge bg-secondary mx-1">
-            <a href="domaine/${element.replaceAll(" ", "_")}" class="link-light">
+            <a href="/domaine/${element.replaceAll(" ", "_")}" class="link-light">
             ${element}
             </a>
           </span>`;
