@@ -596,7 +596,7 @@ function cacherChargement(zone) {
 // Affichage des résultats dans un tableau
 function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-recherche", afficherDescription = true) {
   // Tableau pour mémoriser l'ordre des variables
-  console.log(data);
+  console.log('donnees',data);
 
   var contenuTableau = "";
 
@@ -644,15 +644,14 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
         </div>
        </div>`
     });
-    
-    if(contenuTableau == "") {
-      $(idTableau).html("Aucun résultat.");
-    }
-    else {
-      $(idTableau).html(contenuTableau);
-    }
-    activerCollapsibleTexts();
   }
+  if(contenuTableau == "") {
+    $(idTableau).html("Aucun résultat.");
+  }
+  else {
+    $(idTableau).html(contenuTableau);
+  }
+  activerCollapsibleTexts();
 }
 
 /*
