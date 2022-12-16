@@ -1,4 +1,4 @@
-function rechercherScientist(scientistName){
+function rechercherScientist(scientistName, callback){
 
     
     decodeURIComponent(scientistName);
@@ -7,7 +7,7 @@ function rechercherScientist(scientistName){
     scientistName = scientistName.replaceAll(',', '\\,');
     scientistName = scientistName.replaceAll("&#39;", "\\'");
   
-    console.log(scientistName);
+    //console.log(scientistName);
   var requete = `
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -71,8 +71,7 @@ function rechercherScientist(scientistName){
         * cette chaine dans un div id="res"*/
         .done(function(response){
             console.log(response);
-            afficherScientist(response);
-            
+            callback(response);
         })
   
         //Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
@@ -225,6 +224,50 @@ function afficherScientist(response)
         }
     } else {
         document.getElementById("awards").style.display = "none";
+    }  
+    rechercherDoctoralSudent(response.results.bindings[0].name.value, 5);  
+    const ul = document.querySelector('#genetree ul'); 
+    const li = document.createElement('li');
+    li.setAttribute("id", response.results.bindings[0].name.value.replaceAll(' ', '_'))
+    ul.appendChild(li);
+    const a = document.createElement('a');
+    a.innerHTML = response.results.bindings[0].name.value;
+    li.appendChild(a);
+    const ul2 = document.createElement('ul');
+    li.appendChild(ul2);
+}
+
+function afficherDoctorant(response, increment, parentName){
+    console.log(response)
+
+    if(response.results.bindings[0].doctoralStudents.value != ''){
+        var data = response.results.bindings[0].doctoralStudents.value.split(';');
+        // Récupérez l'élément <tbody>
+        //const tbody = document.querySelector('#genealogie tbody');
+        const ul = document.querySelector('#'+parentName+' ul');
+        console.log(parentName);
+        // Insérez les données dans le tableau
+        for (const row of data) {
+            /* const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            const a = document.createElement("a");
+            console.log(row);
+            a.href = "/scientist/"+row.replace('http://dbpedia.org/resource/', '');
+            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+            td.appendChild(a);
+            tr.appendChild(td);
+            tbody.appendChild(tr); */
+            const li = document.createElement('li');
+            li.setAttribute("id", row.replace('http://dbpedia.org/resource/', '').replaceAll(' ', '_'))
+            ul.appendChild(li);
+            const a = document.createElement('a');
+            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+            li.appendChild(a);
+            const ul2 = document.createElement('ul');
+            li.appendChild(ul2);
+            if(increment>0){
+                rechercherDoctoralSudent(row.replace('http://dbpedia.org/resource/', ''), increment);
+            }
+        }
     }
-    
 }
