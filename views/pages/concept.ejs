@@ -17,11 +17,16 @@
 
         <h2>Informations supplémentaires</h2>
 
-        <div style="max-height: 600px; overflow-y: scroll;">
-            Scientists related to this concept
-            <div class="row" id="scientifiques">
-
-            </div>
+        <div style="max-height: 300px; overflow: scroll;">
+            <table class="table table-bordered table-hover" id="scientifiques">
+                <thead>
+                    <tr>
+                        <th>Scientists related to the concept</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
 
         <div style="max-height: 300px; overflow: scroll;">
@@ -61,18 +66,14 @@
         image.setAttribute("src", response.results.bindings[0].o.value);
     });
 
-    rechercherInventeur("dbr:"+domain, "#scientifiques");
+    //rechercherInventeur("dbr:"+domain, "#scientifiques");
+
     
-    /*
     rechercherInventeur("dbr:" + domain, function (response) {
         var input = response.results.bindings;
-        var data = input.map(item => {
-                                        if (item.p2) {
-                                            return item.p2.value.split("/").pop();
-                                        } else if (item.o) {
-                                            return item.o.value.split("/").pop();
-                                        }
-                                        });
+        var data = input.map(function(item) {
+            return item.p.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+        });
         data = Array.from(new Set(data));
         // Récupérez l'élément <tbody>
         const tbody = document.querySelector('#scientifiques tbody');
@@ -81,14 +82,15 @@
             const tr = document.createElement('tr');
             const td = document.createElement('td');
             const a = document.createElement("a");
-            a.href = "/scientist/" + row.replace(' ', '_');
+            console.log(row);
+            a.href = "/scientist/" + row.replaceAll(' ', '_');
             a.innerHTML = row;
             td.appendChild(a);
             tr.appendChild(td);
             tbody.appendChild(tr);
         }
     });
-    */
+    
 
     rechercherTout("dbr:" + domain, "rdfs:seeAlso", null, function (response) {
         var input = response.results.bindings;
