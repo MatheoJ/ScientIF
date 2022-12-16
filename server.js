@@ -52,6 +52,12 @@ app.get('/concept/:concept_name', (request, response) => {
   })*/
 })
 
+app.get('/random', (request, response) => {
+  Requetes.random(function(nom_aleatoire) {
+    response.redirect('/scientist/'+nom_aleatoire)
+  })
+})
+
 app.listen(80)
 
 /*
