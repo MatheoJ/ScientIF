@@ -4,16 +4,19 @@ Moteur de recherche spécialisé sur les scientifiques du monde entier, leurs do
 
 ## Getting started
 
+Pour installer les dépendances de notre projet, tapez `npm install`.
+
 Pour démarrer le serveur, il faut entrer la commande `npm start` dans le répertoire racine du projet.
+Vous pourrez ensuite accéder à 127.0.0.1 dans votre navigateur.
 
-## Installations
+## Pré-requis
 
-Pour installer nodeJS sous Windows : https://nodejs.org/fr/download/
+Notre projet utilise un serveur NodeJS. Il faut donc que vous ayez NodeJS installé sur votre machine.
 
-Pour installer nodeJS sous Ubuntu : `sudo apt-get install nodejs` et `sudo apt-get install npm`.
+Pour installer NodeJS sous Windows : https://nodejs.org/fr/download/
 
-Durant la phase de développement, installez `nodemon`, qui redémarre automatiquement le serveur en cas d'enregistrement de modifications, sans devoir le relancer.
+Pour installer NodeJS sous Ubuntu : `sudo apt-get install nodejs` et `sudo apt-get install npm`.
 
-Sous Windows : `npm i -g nodemon`
+
 
 `
