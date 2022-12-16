@@ -480,7 +480,7 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
             <!-- <img src="..." class="card-img-top" alt="..."> -->
             <div class='card-body'>
               <h5 class='card-title text-center'>
-                <a class="link-dark text-decoration-none" href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}>"${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}">${r.p.value.substring(r.p.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
+                <a class="link-dark text-decoration-none" href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}">${r.p.value.substring(r.p.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
               </h5>
               <div class="card-subtitle mb-2 text-center">`;
         disciplines.forEach(element => {
