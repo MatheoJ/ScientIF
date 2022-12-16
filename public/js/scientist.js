@@ -22,6 +22,7 @@ function rechercherScientist(scientistName){
         \n
         SELECT GROUP_CONCAT(DISTINCT ?discipline;separator =";") AS ?disciplines 
         GROUP_CONCAT(DISTINCT ?doctoralStudent;separator =";") AS ?doctoralStudents
+        GROUP_CONCAT(DISTINCT ?concept;separator =";") AS ?concepts
         ?name 
         ?description 
         ?conjoint 
@@ -37,6 +38,7 @@ function rechercherScientist(scientistName){
             OPTIONAL{:${scientistName} foaf:isPrimaryTopicOf ?isPrimaryTopicOf}
             OPTIONAL{:${scientistName} dbo:thumbnail ?thumbnail}
             OPTIONAL{:${scientistName} dbo:doctoralStudent ?doctoralStudent}
+            OPTIONAL{:${scientistName} dbo:knownFor ?concept}
             FILTER(langMatches(lang(?description),"EN"))
             FILTER(langMatches(lang(?name),"EN"))
         }`;
@@ -148,6 +150,24 @@ function afficherScientist(response)
             tr.appendChild(td);
             tbody2.appendChild(tr);
         } 
+    }
+    if(response.results.bindings[0].hasOwnProperty("concepts")){        
+        var data = response.results.bindings[0].concepts.value.split(';');
+        // Récupérez l'élément <tbody>
+        const tbody = document.querySelector('#concepts tbody');
+        // Insérez les données dans le tableau
+        for (const row of data) {
+            const tr = document.createElement('tr');
+
+            const td = document.createElement('td');
+            const a = document.createElement("a");
+            console.log(row);
+            a.href = "/concept/"+row.replace('http://dbpedia.org/resource/', '');
+            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+            td.appendChild(a);
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        }
     }
     
 }
