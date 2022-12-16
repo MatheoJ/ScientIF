@@ -97,32 +97,49 @@ function afficherScientist(response)
     if(response.results.bindings[0].hasOwnProperty("isPrimaryTopicOf")){
         var lien = document.querySelector('#pageWikipedia');
         lien.setAttribute("href", response.results.bindings[0].isPrimaryTopicOf.value);
+    } else{
+        document.getElementById("pageWikipedia").style.display = "none";
     }
     if(response.results.bindings[0].hasOwnProperty("description")){
         var resume = document.querySelector('#resume');
         element = response.results.bindings[0].description.value;
         resume.innerHTML = element;
-    }    
+    } else{
+        document.getElementById("resume").style.display = "none";
+    }   
     if(response.results.bindings[0].hasOwnProperty("thumbnail")){
         var image = document.querySelector('#image');
         image.setAttribute("src", response.results.bindings[0].thumbnail.value);
-    }  
+        image.onerror = function (){
+            image.setAttribute("src", "/assets/img/scientist.ico");
+        }
+    } else{
+        document.querySelector('#image').setAttribute("src", "/assets/img/scientist.ico");
+    }
     if(response.results.bindings[0].hasOwnProperty("date")){
         var date = document.querySelector('#dateNaissance');
         date.innerHTML= "Né.e le :"+response.results.bindings[0].date.value;
     } 
+    else{
+        document.getElementById("dateNaissance").style.display = "none";
+    }
     if(response.results.bindings[0].hasOwnProperty("birthPlace")){
         var date = document.querySelector('#birthPlaveValue');
         date.innerHTML= "Lieu de naissance: "+response.results.bindings[0].birthPlace.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
-    } 
+    }
+    else{
+        document.getElementById("birthPlaveValue").style.display = "none";
+    }
     if(response.results.bindings[0].hasOwnProperty("conjoint")){
         var lien = document.querySelector('#conjoint');
         var conjointLien = response.results.bindings[0].conjoint.value;
         lien.setAttribute("href", "/scientist/"+conjointLien.replace('http://dbpedia.org/resource/', ''));
         lien.innerHTML =response.results.bindings[0].conjoint.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
         
-    } 
-    if(response.results.bindings[0].hasOwnProperty("disciplines")){        
+    } else{
+        document.getElementById("conjointDiv").style.display = "none";
+    }
+    if(response.results.bindings[0].disciplines.value != ''){        
         var data = response.results.bindings[0].disciplines.value.split(';');
         // Récupérez l'élément <tbody>
         const tbody = document.querySelector('#disciplines tbody');
@@ -138,8 +155,10 @@ function afficherScientist(response)
             tr.appendChild(td);
             tbody.appendChild(tr);
         }
+    }else{
+        document.getElementById("disciplines").style.display = "none";
     }
-    if(response.results.bindings[0].hasOwnProperty("doctoralStudents")){   
+    if(response.results.bindings[0].doctoralStudents.value != ''){   
 
         var data = response.results.bindings[0].doctoralStudents.value.split(';');
         // Récupérez l'élément <tbody>
@@ -158,8 +177,10 @@ function afficherScientist(response)
             tr.appendChild(td);
             tbody2.appendChild(tr);
         } 
+    } else {
+        document.getElementById("doctorants").style.display = "none";
     }
-    if(response.results.bindings[0].hasOwnProperty("concepts")){        
+    if(response.results.bindings[0].concepts.value != ''){        
         var data = response.results.bindings[0].concepts.value.split(';');
         // Récupérez l'élément <tbody>
         const tbody = document.querySelector('#concepts tbody');
@@ -176,6 +197,8 @@ function afficherScientist(response)
             tr.appendChild(td);
             tbody.appendChild(tr);
         }
+    } else {
+        document.getElementById("concepts").style.display = "none";
     }
     if(response.results.bindings[0].hasOwnProperty("awards")){        
         var data = response.results.bindings[0].awards.value.split(';');
