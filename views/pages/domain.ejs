@@ -11,18 +11,18 @@
       </div>
       <div class="col">
         <p id="resume"></p>
-        <a id="pageWikipedia">Pour en savoir plus...</a>
+        <a id="pageWikipedia" style="display: none;">More on wikipedia</a>
       </div>
     </div>
     
     
-    <h2>Informations supplémentaires</h2>
+    <h2 id="more" style="display: none;">Further information</h2>
 
-    <div style="max-height: 300px; overflow: scroll;"> 
+    <div id="tableau" style="max-height: 300px; overflow: scroll; display: none"> 
       <table class="table table-bordered table-hover" id="scientifiques">
         <thead class="header-sticky">
           <tr>
-            <th>Noms des scientifiques avec le même champ d'étude</th>
+            <th>Scientists with this field of study</th>
           </tr>
         </thead>
         <tbody>
@@ -34,24 +34,34 @@
 <script>
     <% if (locals.domain_name) { %>
         let domain = '<%= locals.domain_name %>';
+        domain = domain.replace(/\(/g, "\\(").replace(/\)/g, "\\)").replace(/&#39;/g, "\\'").replace(/,/g, '\\,');
         console.log(domain);
         rechercherTout("dbr:"+domain, "rdfs:label", null, function(response){
         var titre = document.querySelector('#titre');
         var nomPage = document.querySelector("#nomPage");
-        var element = response.results.bindings.find(obj => obj.o["xml:lang"] === "en");
+        
+        var element = (response.results.bindings.length>0) ? response.results.bindings.find(obj => obj.o["xml:lang"] === "en"): {"o":{"value" :"No name found"}};
         titre.innerHTML = nomPage.innerHTML = element.o.value;
         });
 
         rechercherTout("dbr:"+domain, "foaf:isPrimaryTopicOf", null, function(response){
-        console.log(response);
+        console.log("wiki :",response);
         var lien = document.querySelector('#pageWikipedia');
-        lien.setAttribute("href", response.results.bindings[0].o.value);
+        if(response.results.bindings.length>0){
+          lien.style.display = "block";
+          lien.setAttribute("href", response.results.bindings[0].o.value);
+        }
+        
         });
         rechercherTout("dbr:"+domain, "dbo:abstract", null, function(response){
         console.log("titre : ",response);
         var resume = document.querySelector('#resume');
-        var element = response.results.bindings.find(obj => obj.o["xml:lang"] === "en");
-        resume.innerHTML = element.o.value;
+        if(response.results.bindings.length>0){
+          
+          var element = response.results.bindings.find(obj => obj.o["xml:lang"] === "en");
+          resume.innerHTML = element.o.value;
+        }
+        
         });
         afficherChargement($("#image-chargement"), "Chargement de l'image");
         rechercherTout("dbr:"+domain, "dbo:thumbnail", null, function(response){
@@ -61,20 +71,22 @@
             $("#image-chargement").html('');
         }
         else {
-            $("#image-chargement").html('Aucune image trouvée.');
+            $("#image-chargement").html('No image found.');
         }
         });
 
         rechercherScientifique("dbr:"+domain, function (response) {
         var input = response.results.bindings;
-        console.log("oui", response);
         var data = input.map(function(item) {
             return item.p.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
         });
-        // Récupérez l'élément <tbody>
-        const tbody = document.querySelector('#scientifiques tbody');
-        // Insérez les données dans le tableau
-        for (const row of data) {
+        if(data.length>0){
+          document.querySelector("#tableau").style.display = "block";
+          document.querySelector("#more").style.display = "block";
+          // Récupérez l'élément <tbody>
+          const tbody = document.querySelector('#scientifiques tbody');
+          // Insérez les données dans le tableau
+          for (const row of data) {
             const tr = document.createElement('tr');
 
             const td = document.createElement('td');
@@ -85,6 +97,8 @@
             tr.appendChild(td);
             tbody.appendChild(tr);
         }
+        }
+        
         });
     <% } %>
     // Get the query string from the URL
