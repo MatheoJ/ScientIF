@@ -19,7 +19,7 @@ function rechercherNom(name) {
                               PREFIX dbpedia: <http://dbpedia.org/>
                               PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                               \n
-                              SELECT DISTINCT ?p ?resume ?birthday (GROUP_CONCAT(DISTINCT ?nomDiscipline; separator = ", ") AS ?disciplines) WHERE {
+                              SELECT DISTINCT ?p ?resume ?birthday ?image (GROUP_CONCAT(DISTINCT ?nomDiscipline; separator = ", ") AS ?disciplines) WHERE {
                                 ?p a dbo:Species .
 
                                 { ?p foaf:name ?name . }
@@ -28,7 +28,7 @@ function rechercherNom(name) {
                               
                                 ?p dbo:abstract ?resume .
                                 FILTER LANGMATCHES(lang(?resume), 'en') 
-                              
+                                ?p dbo:thumbnail ?image.
                                 { ?p dbo:academicDiscipline ?discipline .
                                   ?discipline rdfs:label ?nomDiscipline . 
                                   FILTER LANGMATCHES(lang(?nomDiscipline), 'en')
@@ -209,8 +209,8 @@ function rechercherDomaine(domaine) {
   });
 }
 
-/*
-function rechercherScientifique(objet, idTableau) {
+
+function rechercherConcept(sujet, idTableau, callback) {
   var requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
                               PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                               PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -222,21 +222,76 @@ function rechercherScientifique(objet, idTableau) {
                               PREFIX dbpedia: <http://dbpedia.org/>
                               PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                               \n
-                              SELECT ?p ?name ?resume ?birthday ?wikipedia (GROUP_CONCAT(DISTINCT ?nomDiscipline; separator = ", ") AS ?disciplines) WHERE {
+                              SELECT ?p ?image WHERE {
+                              ${sujet} rdfs:seeAlso ?p.
+                              ?p dbo:thumbnail ?image
+                              }
+                              `;
+
+
+  // Encodage de l'URL à transmettre à DBPedia
+  var url_base = "http://dbpedia.org/sparql/";
+  $(document).ready(function () {
+    $.ajax({
+      //L'URL de la requête 
+      url: url_base,
+
+      //La méthode d'envoi (type de requête)
+      method: "GET",
+
+      //Le format de réponse attendu
+      dataType: "json",
+      data: { query: requete },
+      //beforeSend: afficherChargement($(idTableau), "Chargement")
+    })
+
+      /*Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done().
+        On peut par exemple convertir cette réponse en chaine JSON et insérer
+        cette chaine dans un div id="res"
+      */
+      .done(function (response) {
+        // let data = (response);
+        console.log("rep ", response);
+        
+        if(response.results.bindings.length>0){
+          afficherInformations(response, idTableau, "concept");
+          callback();
+        }
+      })
+
+      /* Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
+        On peut afficher les informations relatives à la requête et à l'erreur 
+      */
+      .fail(function (error) {
+        alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
+      })
+
+      // Ce code sera exécuté que la requête soit un succès ou un échec
+      .always(function () {
+        //alert("Requête effectuée");
+
+      });
+  });
+}
+
+function rechercherScientifique(objet, idTableau, callback) {
+  var requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
+                              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+                              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                              PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+                              PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                              PREFIX : <http://dbpedia.org/resource/>
+                              PREFIX dbpedia2: <http://dbpedia.org/property/>
+                              PREFIX dbpedia: <http://dbpedia.org/>
+                              PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                              \n
+                              SELECT ?p ?name ?image WHERE {
                               ?p dbo:academicDiscipline ${objet}.
                               ?p rdf:type foaf:Person.
                               ?p rdf:type dbo:Scientist.            
                               ?p dbo:wikiPageWikiLink ?links.
-                              ?p dbo:abstract ?resume .
-                              ?p dbo:birthDate ?birthday .
-                              ?p dbo:academicDiscipline ?discipline .
-                              ?p foaf:name ?name .
-                              ?p foaf:isPrimaryTopicOf ?wikipedia.
-                              ?discipline rdfs:label ?nomDiscipline .
-                              
-                              FILTER LANGMATCHES(lang(?resume), 'en')
-                              FILTER LANGMATCHES(lang(?nomDiscipline), 'en')
-                              FILTER (?name != ''@en)
+                              ?p dbo:thumbnail ?image
                               }
                               ORDER BY desc(COUNT(?links))`;
 
@@ -254,22 +309,26 @@ function rechercherScientifique(objet, idTableau) {
       //Le format de réponse attendu
       dataType: "json",
       data: { query: requete },
-      beforeSend: afficherChargement($(idTableau), "Chargement")
+      //beforeSend: afficherChargement($(idTableau), "Chargement")
     })
 
       /*Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done().
         On peut par exemple convertir cette réponse en chaine JSON et insérer
         cette chaine dans un div id="res"
-      
+      */
       .done(function (response) {
         // let data = (response);
         console.log("rep ", response);
-        afficherResultats(response, idTableau, false);
+        
+        if(response.results.bindings.length>0){
+          afficherInformations(response, idTableau);
+          callback();
+        }
       })
 
       /* Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
         On peut afficher les informations relatives à la requête et à l'erreur 
-      
+      */
       .fail(function (error) {
         alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
       })
@@ -281,7 +340,7 @@ function rechercherScientifique(objet, idTableau) {
       });
   });
 }
-*/
+/*
 function rechercherScientifique(objet, callback) {
   var requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
                               PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -322,7 +381,7 @@ function rechercherScientifique(objet, callback) {
       /*Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done().
         On peut par exemple convertir cette réponse en chaine JSON et insérer
         cette chaine dans un div id="res"
-      */
+      
       .done(function (response) {
         // let data = (response);
         console.log("rep ", response);
@@ -331,7 +390,7 @@ function rechercherScientifique(objet, callback) {
 
       /* Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
         On peut afficher les informations relatives à la requête et à l'erreur 
-      */
+      
       .fail(function (error) {
         alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
       })
@@ -343,7 +402,7 @@ function rechercherScientifique(objet, callback) {
       });
   });
 }
-
+*/
 function rechercherDoctoralSudent(scientistName, increment){
   increment -= 1;
   decodeURIComponent(scientistName);
@@ -415,8 +474,8 @@ $(document).ready(function () {
   });
 });
 }
-/*
-function rechercherInventeur(sujet, idTableau) {
+
+function rechercherInventeur(sujet, idTableau, callback) {
   var requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
                               PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                               PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -429,43 +488,25 @@ function rechercherInventeur(sujet, idTableau) {
                               PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                               \n
 
-                              SELECT ?p ?name ?resume ?birthday ?wikipedia (GROUP_CONCAT(DISTINCT ?nomDiscipline; separator = ", ") AS ?disciplines) WHERE {
+                              SELECT ?p  ?image WHERE {
                                 {
                                   ${sujet} dbo:wikiPageWikiLink ?p.
                                   ?p rdf:type foaf:Person.  
                                   ?p rdf:type dbo:Scientist.                                                    
-                                  ?p rdf:type foaf:Person.
-                                  ?p rdf:type dbo:Scientist.            
                                   ?p dbo:wikiPageWikiLink ?links.
-                                  ?p dbo:abstract ?resume .
-                                  ?p dbo:birthDate ?birthday .
-                                  ?p dbo:academicDiscipline ?discipline .
-                                  ?p foaf:name ?name .
-                                  ?p foaf:isPrimaryTopicOf ?wikipedia.
-                                  ?discipline rdfs:label ?nomDiscipline .
-                                  FILTER LANGMATCHES(lang(?resume), 'en')
-                                  FILTER LANGMATCHES(lang(?nomDiscipline), 'en')
-                                  FILTER (?name != ''@en)
+                                  ?p dbo:thumbnail ?image.
                                 }
                                 UNION
                                 {
                                   ${sujet} dbo:wikiPageWikiLink ?o1.
                                   ?o1 dbo:wikiPageRedirects ?p.
                                   ?p rdf:type foaf:Person.  
-                                  ?p rdf:type dbo:Scientist.                                                    
-                                  ?p rdf:type foaf:Person.
-                                  ?p rdf:type dbo:Scientist.            
+                                  ?p rdf:type dbo:Scientist.                                                               
                                   ?p dbo:wikiPageWikiLink ?links.
-                                  ?p dbo:abstract ?resume .
-                                  ?p dbo:birthDate ?birthday .
-                                  ?p dbo:academicDiscipline ?discipline .
-                                  ?p foaf:name ?name .
-                                  ?p foaf:isPrimaryTopicOf ?wikipedia.
-                                  ?discipline rdfs:label ?nomDiscipline .
-                                  FILTER LANGMATCHES(lang(?resume), 'en')
-                                  FILTER LANGMATCHES(lang(?nomDiscipline), 'en')
+                    
+                                  ?p dbo:thumbnail ?image.
                                   FILTER(?p != ?o1)
-                                  FILTER (?name != ''@en)
+                       
                                 }
                               }
                               ORDER BY desc(COUNT(?links))`;
@@ -490,16 +531,21 @@ function rechercherInventeur(sujet, idTableau) {
       /*Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done().
         On peut par exemple convertir cette réponse en chaine JSON et insérer
         cette chaine dans un div id="res"
-      
+      */
       .done(function (response) {
         // let data = (response);
         console.log("rep ", response);
-        afficherResultats(response, idTableau, false);
+        if(response.results.bindings.length>0){
+          console.log("ouioui");
+          afficherInformations(response, idTableau);
+          callback();
+        }
+        
       })
 
       /* Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
         On peut afficher les informations relatives à la requête et à l'erreur 
-      
+      */
       .fail(function (error) {
         alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
       })
@@ -511,7 +557,7 @@ function rechercherInventeur(sujet, idTableau) {
       });
   });
 }
-*/
+/*
 function rechercherInventeur(sujet, callback){
   var requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
                           PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -560,7 +606,7 @@ function rechercherInventeur(sujet, callback){
       })
       //Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done()
       /*On peut par exemple convertir cette réponse en chaine JSON et insérer
-      * cette chaine dans un div id="res"*/
+      * cette chaine dans un div id="res"
       .done(function(response){
           callback(response);
       })
@@ -577,7 +623,7 @@ function rechercherInventeur(sujet, callback){
       });
   });
 }
-
+*/
 function afficherChargement(zone, texte) {
   zone.html(
     ` <div>
@@ -593,6 +639,27 @@ function cacherChargement(zone) {
 
 }
 
+function afficherInformations(data, idTableau, redirectPage="scientist") {
+  var contenuTableau = "";
+  data.results.bindings.forEach(r => {
+    contenuTableau +=
+      `<div class='col-6 mb-3'>
+        <div class='card card-lg card-sm-down-md' >
+          <a href="/${redirectPage}/${r.p.value.substring(r.p.value.lastIndexOf("/") + 1)}">
+            <img src="${r.image.value}" onerror="this.src='/assets/img/${redirectPage}.ico'" width="300" height="auto" class="card-img-top" alt="..." /> 
+          </a>
+          <div class='card-body'>
+            <h5 class='card-title text-center'>
+              <a class="link-dark " href="/${redirectPage}/${r.p.value.substring(r.p.value.lastIndexOf("/") + 1)}">${r.p.value.substring(r.p.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
+            </h5>
+          </div>
+        </div>
+      </div>`;
+  });
+  $(idTableau).html(contenuTableau);
+  activerCollapsibleTexts();
+}
+
 // Affichage des résultats dans un tableau
 function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-recherche", afficherDescription = true) {
   // Tableau pour mémoriser l'ordre des variables
@@ -602,16 +669,21 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
 
   if(typeRecherche == "nom") {
     data.results.bindings.forEach(r => {
-      disciplines = r.disciplines.value.split(", ");
+      
       contenuTableau +=
         `<div class='col mb-3'>
           <div class='card'>
-            <!-- <img src="..." class="card-img-top" alt="..."> -->
+          <a  href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}">
+            <img src="${r.image.value}" onerror="this.src='/assets/img/scientist.ico'" width="300" height ="auto" class="card-img-top" alt="..." /> 
+          </a>
             <div class='card-body'>
               <h5 class='card-title text-center'>
-                <a class="link-dark text-decoration-none" href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}">${r.p.value.substring(r.p.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
-              </h5>
-              <div class="card-subtitle mb-2 text-center">`;
+                <a class="link-dark " href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}">${r.p.value.substring(r.p.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
+              </h5>`;
+        if(afficherDescription){
+          disciplines = r.disciplines.value.split(", ");
+        
+            contenuTableau+= `<div class="card-subtitle mb-2 text-center">`;
         disciplines.forEach(element => {
           contenuTableau += 
             `<span class="badge bg-secondary mx-1">
@@ -623,9 +695,12 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
         contenuTableau +=
               `</div>
               <p class='card-text'><span class='more'> ${r.resume.value} </span></p>
-              <div class="text-center">
+              <!--div class="text-center">
                 <a href='${r.p.value}' class='btn btn-primary' target='_blank'>DBpedia</a>
-              </div>
+              </div-->`;
+      }
+      contenuTableau+=`
+
             </div>
           </div>
         </div>`
@@ -635,7 +710,7 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
     data.results.bindings.forEach(r => {
       contenuTableau +=
             `</div>`;
-      if (afficherDescription) contenuTableau+= `<p class='card-text'><span class='more'> ${r.resume.value} </span></p>`;
+      contenuTableau+= `<p class='card-text'><span class='more'> ${r.resume.value} </span></p>`;
       contenuTableau += `
             <div class="text-center">
               <a href='${r.wikipedia.value}' class='btn btn-primary' target='_blank'>Wikipedia</a>

@@ -1,88 +1,137 @@
 <%- include ('header') %>
 
+  <style>
+    p {
+      hyphens: auto;
+      overflow-wrap: break-word;
+      width: 100%;
 
-<div class="container mt-5">
+    }
 
-    <h1 id="titre"></h1>
+    .col-md-4 {
+      text-align: center;
+    }
+  </style>
+
+  <div class="container mt-5">
     <div class="row">
-      <div class="col-auto">
-        <img id="image" />
-        <p id="image-chargement"></p>
-      </div>
-      <div class="col">
-        <p id="resume"></p>
-        <a id="pageWikipedia" style="display: none;">More on wikipedia</a>
+      <div class="col-md-12 mx-auto text-center">
+        <h1 id="titre" class="display-4 mb-4 text-justify"></h1>
       </div>
     </div>
-    
-    
-    <h2 id="more" style="display: none;">Further information</h2>
+    <div class="row d-flex align-items-center justify-content-center">
+      <div class="col-md-4 mx-auto">
+        <div class="border p-3 w-100 bg-light">
+          <p id="resume" class="mb-4 text-justify"></p>
+        </div>
+      </div>
+      <div class="col-md-4 mx-auto">
+        <img id="image" class="img-fluid rounded mb-4" />
+        <p id="image-chargement" class="text-muted text-center"></p>
+      </div>
+      <div class="col-md-4 mx-auto">
+        <div class="border p-3 bg-light">
+          <p id="resume2" class="mb-4 text-justify"></p>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <a id="pageWikipedia" class="btn btn-primary mx-auto mt-4" style="display: none;" target="_blank">More on
+        Wikipedia</a>
+    </div>
 
-    <div id="tableau" style="max-height: 300px; overflow: scroll; display: none"> 
-      <table class="table table-bordered table-hover" id="scientifiques">
-        <thead class="header-sticky">
+    <h2 id="more" class="mt-5 text-center text-primary" style="display: none;">Further information</h2>
+    <h3 id="titleTable" class="mt-5 text-center text-primary" style="display: none;" >Scientists with the same academic discipline</h3>
+    <div id="tableau"  style="max-height: 500px; overflow: scroll; display: none">
+
+      <div id="scientifiques" class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-sm-2 row-cols-xl-5 g-4" >
+
+      </div>
+      <!--table class="table table-bordered table-hover table-striped" id="scientifiques">
+        <thead class="thead-dark">
           <tr>
             <th>Scientists with this field of study</th>
           </tr>
         </thead>
         <tbody>
         </tbody>
-      </table>
+      </table-->
     </div>
-</div>
+  </div>
 
-<script>
+  <script>
     <% if (locals.domain_name) { %>
-        let domain = '<%= locals.domain_name %>';
-        domain = domain.replace(/\(/g, "\\(").replace(/\)/g, "\\)").replace(/&#39;/g, "\\'").replace(/,/g, '\\,');
-        console.log(domain);
-        rechercherTout("dbr:"+domain, "rdfs:label", null, function(response){
+      let domain = '<%= locals.domain_name %>';
+      domain = domain.replace(/\(/g, "\\(").replace(/\)/g, "\\)").replace(/&#39;/g, "\\'").replace(/,/g, '\\,');
+      console.log(domain);
+      rechercherTout("dbr:" + domain, "rdfs:label", null, function (response) {
         var titre = document.querySelector('#titre');
         var nomPage = document.querySelector("#nomPage");
-        
-        var element = (response.results.bindings.length>0) ? response.results.bindings.find(obj => obj.o["xml:lang"] === "en"): {"o":{"value" :"No name found"}};
-        titre.innerHTML = nomPage.innerHTML = element.o.value;
-        });
 
-        rechercherTout("dbr:"+domain, "foaf:isPrimaryTopicOf", null, function(response){
-        console.log("wiki :",response);
+        var element = (response.results.bindings.length > 0) ? response.results.bindings.find(obj => obj.o["xml:lang"] === "en") : { "o": { "value": "No name found" } };
+        titre.innerHTML = nomPage.innerHTML = element.o.value;
+      });
+
+      rechercherTout("dbr:" + domain, "foaf:isPrimaryTopicOf", null, function (response) {
+        console.log("wiki :", response);
         var lien = document.querySelector('#pageWikipedia');
-        if(response.results.bindings.length>0){
+        if (response.results.bindings.length > 0) {
           lien.style.display = "block";
           lien.setAttribute("href", response.results.bindings[0].o.value);
         }
-        
-        });
-        rechercherTout("dbr:"+domain, "dbo:abstract", null, function(response){
-        console.log("titre : ",response);
+
+      });
+      rechercherTout("dbr:" + domain, "dbo:abstract", null, function (response) {
+        console.log("titre : ", response);
         var resume = document.querySelector('#resume');
-        if(response.results.bindings.length>0){
-          
-          var element = response.results.bindings.find(obj => obj.o["xml:lang"] === "en");
-          resume.innerHTML = element.o.value;
+        if (response.results.bindings.length > 0) {
+
+          var text = response.results.bindings.find(obj => obj.o["xml:lang"] === "en").o.value;
+          // Recherche de l'index du dernier espace avant la moitié du texte
+          let index = text.lastIndexOf(' ', text.length / 2);
+
+          // Division du texte en deux parties
+          let text1 = text.substring(0, index);
+          let text2 = text.substring(index + 1);
+          // Attribution des deux parties de texte aux éléments #resume et #resume2
+          document.getElementById('resume').innerText = text1;
+          document.getElementById('resume2').innerText = text2;
         }
-        
-        });
-        afficherChargement($("#image-chargement"), "Chargement de l'image");
-        rechercherTout("dbr:"+domain, "dbo:thumbnail", null, function(response){
-        if(response.results.bindings != undefined && response.results.bindings.length > 0) {
-            var image = document.querySelector('#image');
-            image.setAttribute("src", response.results.bindings[0].o.value);
-            $("#image-chargement").html('');
+
+      });
+      afficherChargement($("#image-chargement"), "Chargement de l'image");
+      rechercherTout("dbr:" + domain, "dbo:thumbnail", null, function (response) {
+        var image = document.querySelector('#image');
+        $("#image-chargement").html('');
+        if (response.results.bindings != undefined && response.results.bindings.length > 0) {
+          
+          image.setAttribute("src", response.results.bindings[0].o.value);
+          
         }
         else {
-            $("#image-chargement").html('No image found.');
+          image.setAttribute("src", "/assets/img/domain.ico");
+          
         }
-        });
+      });
 
-        rechercherScientifique("dbr:"+domain, function (response) {
-        var input = response.results.bindings;
-        var data = input.map(function(item) {
-            return item.p.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
-        });
-        if(data.length>0){
+      rechercherScientifique("dbr:"+domain, "#scientifiques", function(){
           document.querySelector("#tableau").style.display = "block";
           document.querySelector("#more").style.display = "block";
+          document.querySelector("#titleTable").style.display = "block";
+      });
+      /*
+      rechercherScientifique("dbr:" + domain, function (response) {
+        var input = response.results.bindings;
+        var data = input.map(function (item) {
+          return item.p.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+        });
+
+        if (data.length > 0) {
+          document.querySelector("#tableau").style.display = "block";
+          document.querySelector("#more").style.display = "block";
+          afficherScientifiquesDomaine(data, '#tableau');
+        
+          
           // Récupérez l'élément <tbody>
           const tbody = document.querySelector('#scientifiques tbody');
           // Insérez les données dans le tableau
@@ -91,24 +140,26 @@
 
             const td = document.createElement('td');
             const a = document.createElement("a");
-            a.href = "/scientist/"+row.replaceAll(' ','_');
+            a.href = "/scientist/" + row.replaceAll(' ', '_');
             a.innerHTML = row;
             td.appendChild(a);
             tr.appendChild(td);
             tbody.appendChild(tr);
-        }
+          }
         }
         
-        });
+      });
+      */
+    
     <% } %>
     // Get the query string from the URL
     //var searchParams = new URLSearchParams(window.location.search);
     // Get the value of the "param1" parameter
     //var domain = searchParams.get("domain_name");
     // Do something with the value of the parameter
-    
+
 
   </script>
 
 
-<%- include ('footer') %>
+  <%- include ('footer') %>
