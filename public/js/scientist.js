@@ -93,21 +93,34 @@ function afficherScientist(response)
 {
     var titre = document.querySelector('#titre');
     var nomPage = document.querySelector("#nomPage");
-    var element = response.results.bindings[0].name.value;
-    titre.innerHTML = nomPage.innerHTML = element;
+    var element = (response.results.bindings.length > 0) ? response.results.bindings[0] : { "name": { "value": "No name found" } };
+    titre.innerHTML = nomPage.innerHTML = element.name.value;
     
     if(response.results.bindings[0].hasOwnProperty("isPrimaryTopicOf")){
         var lien = document.querySelector('#pageWikipedia');
         lien.setAttribute("href", response.results.bindings[0].isPrimaryTopicOf.value);
-    } else{
+        lien.style.display = "block";
+    }/* 
+    else{
         document.getElementById("pageWikipedia").style.display = "none";
     }
+    */
     if(response.results.bindings[0].hasOwnProperty("description")){
-        var resume = document.querySelector('#resume');
-        element = response.results.bindings[0].description.value;
-        resume.innerHTML = element;
+        //var resume = document.querySelector('#resume');
+        //element = response.results.bindings[0].description.value;
+        //resume.innerHTML = element;
+        var text = response.results.bindings[0].description.value;
+        // Recherche de l'index du dernier espace avant la moitié du texte
+        let index = text.lastIndexOf(' ', text.length / 2);
+        // Division du texte en deux parties
+        let text1 = text.substring(0, index);
+        let text2 = text.substring(index + 1);
+        // Attribution des deux parties de texte aux éléments #resume et #resume2
+        document.getElementById('resume').innerText = text1;
+        document.getElementById('resume2').innerText = text2;
     } else{
         document.getElementById("resume").style.display = "none";
+        document.getElementById("resume2").style.display = "none";
     }   
     if(response.results.bindings[0].hasOwnProperty("thumbnail")){
         var image = document.querySelector('#image');
@@ -119,34 +132,59 @@ function afficherScientist(response)
         document.querySelector('#image').setAttribute("src", "/assets/img/scientist.ico");
     }
     if(response.results.bindings[0].hasOwnProperty("date")){
+        
         var date = document.querySelector('#dateNaissance');
-        date.innerHTML= "Né.e le :"+response.results.bindings[0].date.value;
-    } 
+        date.style.display = "block";
+        date.innerHTML= "Born on the "+response.results.bindings[0].date.value;
+    }/* 
     else{
         document.getElementById("dateNaissance").style.display = "none";
     }
+    */ 
+
     if(response.results.bindings[0].hasOwnProperty("birthPlace")){
-        var date = document.querySelector('#birthPlaveValue');
-        date.innerHTML= "Lieu de naissance: "+response.results.bindings[0].birthPlace.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
-    }
+        var place = document.querySelector('#birthPlaceValue');
+        place.style.display = "block";
+        place.innerHTML= "Place of birth : "+response.results.bindings[0].birthPlace.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+    }/* 
     else{
         document.getElementById("birthPlaveValue").style.display = "none";
     }
+    */
     if(response.results.bindings[0].hasOwnProperty("conjointScientist")){
         var lien = document.querySelector('#conjoint');
         var conjointLien = response.results.bindings[0].conjointScientist.value;
+        lien.style.display = "block";
         lien.setAttribute("href", "/scientist/"+conjointLien.replace('http://dbpedia.org/resource/', ''));
-        lien.innerHTML =response.results.bindings[0].conjointScientist.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+        lien.innerHTML = "Life partner : " + response.results.bindings[0].conjointScientist.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
         
     } else if (response.results.bindings[0].hasOwnProperty("conjoint")){
         var lien = document.querySelector('#conjoint');
-        lien.innerHTML =response.results.bindings[0].conjoint.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
-    } 
+        lien.style.display = "block";
+        lien.innerHTML = "Life partner : " + response.results.bindings[0].conjoint.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+    }
+    /* 
     else{
         document.getElementById("conjointDiv").style.display = "none";
     }
+    */
     if(response.results.bindings[0].disciplines.value != ''){        
         var data = response.results.bindings[0].disciplines.value.split(';');
+        
+        var data = `{ ${data.map(name => `(${name.replace('http://dbpedia.org/resource/', ':')
+                                                .replaceAll("'", "\\'")
+                                                .replaceAll("(", "\\(")
+                                                .replaceAll(")", "\\)")
+                                                .replaceAll(",","\\,")})`)
+                                                .join(" ")} }`;
+        console.log(data);
+        obtenirDonneesTableau(data, function(response){
+            document.querySelector('#tableauDisciplines').style.display = "block";
+            document.querySelector('#titleTableDiscipline').style.display = "block";
+            
+            afficherInformations(response, "#disciplines", "domain");
+        });
+        /*
         // Récupérez l'élément <tbody>
         const tbody = document.querySelector('#disciplines tbody');
         // Insérez les données dans le tableau
@@ -160,13 +198,29 @@ function afficherScientist(response)
             td.appendChild(a);
             tr.appendChild(td);
             tbody.appendChild(tr);
-        }
-    }else{
-        document.getElementById("disciplines").style.display = "none";
-    }
+        }*/
+    }/*else{
+        document.getElementById("concepts").style.display = "none";
+    }*/
     if(response.results.bindings[0].doctoralStudents.value != ''){   
-
         var data = response.results.bindings[0].doctoralStudents.value.split(';');
+        var data = `{ ${data.map(name => `(${name
+                                .replace('http://dbpedia.org/resource/', ':')
+                                .replaceAll("'", "\\'")
+                                .replaceAll("(", "\\(")
+                                .replaceAll(")", "\\)")
+                                .replaceAll(",","\\,")
+                                    })`)
+                                .join(" ")} }`;
+        obtenirDonneesTableau(data, function(response){
+            document.querySelector('#titleTableStudent').style.display = "block";
+            document.querySelector('#tableauStudents').style.display = "block";
+            
+            afficherInformations(response, "#students", "scientist");
+        });
+        
+        
+        /*
         // Récupérez l'élément <tbody>
         const tbody2 = document.querySelector('#doctorants tbody');
         // Insérez les données dans le tableau
@@ -183,11 +237,27 @@ function afficherScientist(response)
             tr.appendChild(td);
             tbody2.appendChild(tr);
         } 
-    } else {
+        */
+    } /*else {
         document.getElementById("doctorants").style.display = "none";
-    }
+    }*/
     if(response.results.bindings[0].concepts.value != ''){        
         var data = response.results.bindings[0].concepts.value.split(';');
+
+        data = `{ ${data.map(name => `(${name.replace('http://dbpedia.org/resource/', ':')
+                                                .replaceAll("'","\\'")
+                                                .replaceAll("(","\\(")
+                                                .replaceAll(")","\\)")
+                                                .replaceAll(",","\\,")
+                                                })`)
+                                                .join(" ")} }`;
+        obtenirDonneesTableau(data, function(response){
+            document.querySelector('#titleTableConcepts').style.display = "block";
+            document.querySelector('#tableauConcepts').style.display = "block";
+            
+            afficherInformations(response, "#concepts", "concept");
+        });
+        /*
         // Récupérez l'élément <tbody>
         const tbody = document.querySelector('#concepts tbody');
         // Insérez les données dans le tableau
@@ -203,11 +273,28 @@ function afficherScientist(response)
             tr.appendChild(td);
             tbody.appendChild(tr);
         }
-    } else {
+        */
+    } /*else {
         document.getElementById("concepts").style.display = "none";
-    }
+    }*/
     if(response.results.bindings[0].awards.value != ''){        
         var data = response.results.bindings[0].awards.value.split(';');
+
+        data = `{ ${data.map(name => `(${name.replace('http://dbpedia.org/resource/', ':')
+                                                .replaceAll("'","\\'")
+                                                .replaceAll("(","\\(")
+                                                .replaceAll(")","\\)")
+                                                .replaceAll(",","\\,")
+                                                })`)
+                                                .join(" ")} }`;
+        obtenirDonneesTableau(data, function(response){
+            document.querySelector('#titleTableAwards').style.display = "block";
+            document.querySelector('#tableauAwards').style.display = "block";
+            
+            afficherInformations(response, "#awards", "award");
+        });
+        
+        /*
         // Récupérez l'élément <tbody>
         const tbody = document.querySelector('#awards tbody');
         // Insérez les données dans le tableau
@@ -222,9 +309,11 @@ function afficherScientist(response)
             tr.appendChild(td);
             tbody.appendChild(tr);
         }
-    } else {
+        */
+    } /*else {
         document.getElementById("awards").style.display = "none";
-    }  
+    }  */
+
     rechercherDoctoralSudent(response.results.bindings[0].name.value, 5);  
     const ul = document.querySelector('#genetree ul'); 
     const li = document.createElement('li');
@@ -271,3 +360,86 @@ function afficherDoctorant(response, increment, parentName){
         }
     }
 }
+
+function obtenirDonneesTableau(data,  callback){
+       //console.log(scientistName);
+  var requete = `
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+  PREFIX dc: <http://purl.org/dc/elements/1.1/>
+  PREFIX : <http://dbpedia.org/resource/>
+  PREFIX dbpedia2: <http://dbpedia.org/property/>
+  PREFIX dbpedia: <http://dbpedia.org/>
+  PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+  \n
+  SELECT DISTINCT ?image ?p WHERE {
+    VALUES (?p) ${data}
+    ?p dbo:thumbnail ?image .
+  }
+  `;
+  
+
+//requete=encodeURIComponent(requete);
+// Encodage de l'URL à transmettre à DBPedia
+var url_base = "http://dbpedia.org/sparql/";
+$(document).ready(function(){
+  $.ajax({
+      //L'URL de la requête 
+      url: url_base,
+
+      //La méthode d'envoi (type de requête)
+      method: "GET",
+
+      //Le format de réponse attendu
+      dataType : "json",
+      data : {query : requete}
+  })
+  //Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done()
+  /*On peut par exemple convertir cette réponse en chaine JSON et insérer
+  * cette chaine dans un div id="res"*/
+  .done(function(response){
+      console.log(response);
+      callback(response);
+  })
+
+  //Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
+  //On peut afficher les informations relatives à la requête et à l'erreur
+  .fail(function(error){
+    resultats = null;
+      alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
+  })
+  //Ce code sera exécuté que la requête soit un succès ou un échec
+  .always(function(){
+      //alert("Requête effectuée");
+  });
+});
+}
+
+function afficherInformations(data, idTableau, redirectPage="scientist") {
+    console.log(data);
+    var contenuTableau = "";
+    data.results.bindings.forEach(r => {
+      contenuTableau +=
+        `<div class='col-6 mb-3'>
+          <div class='card card-lg card-sm-down-md' >`;
+            if(redirectPage != "award") contenuTableau += `<a href="/${redirectPage}/${r.p.value.substring(r.p.value.lastIndexOf("/") + 1)}">`;
+             contenuTableau += ` <img src="${r.image.value}" onerror="this.src='/assets/img/${redirectPage}.ico'" width="300" height="auto" class="card-img-top" alt="..." />`
+            if(redirectPage != "award") contenuTableau += `</a>`;
+
+            contenuTableau += `<div class='card-body'>
+              <h5 class='card-title text-center'>`;
+              contenuTableau += (redirectPage != "award")?  `<a class="link-dark " href="/${redirectPage}/${r.p.value.substring(r.p.value.lastIndexOf("/") + 1)}">`: `<p>`;
+              contenuTableau += `${r.p.value.substring(r.p.value.lastIndexOf("/") + 1).replaceAll("_", " ")}`;
+              contenuTableau += (redirectPage != "award")? `<p/>` :`</a>`;
+              contenuTableau += `
+                </h5>
+                </div>
+                </div>
+                </div>`;
+    });
+    $(idTableau).html(contenuTableau);
+    activerCollapsibleTexts();
+  }
