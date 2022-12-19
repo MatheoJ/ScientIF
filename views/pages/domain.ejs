@@ -11,8 +11,29 @@
     .col-md-4 {
       text-align: center;
     }
+    
+  .image-align-left{
+    float : left;
+  }
+  .image-align-right{
+    float : right;
+  }
+    #image {
+    margin-right: 20px;
+    margin-bottom: 0px;
+  }
+  
+  #resume {
+    text-align: justify;
+  }
+  .float-content:before,
+  .float-content:after{content:""; display:block; clear:both;}
+  .border {
+      overflow: hidden;
+  }
   </style>
-
+  
+  
   <div class="container mt-5">
     <div class="row">
       <div class="col-md-12 mx-auto text-center">
@@ -20,31 +41,28 @@
       </div>
     </div>
     <div class="row d-flex align-items-center justify-content-center">
-      <div class="col-md-4 mx-auto">
+      <div class="mx-auto">
         <div class="border p-3 w-100 bg-light">
-          <p id="resume" class="mb-4 text-justify"></p>
-        </div>
-      </div>
-      <div class="col-md-4 mx-auto">
-        <img id="image" class="img-fluid rounded mb-4" />
-        <p id="image-chargement" class="text-muted text-center"></p>
-      </div>
-      <div class="col-md-4 mx-auto">
-        <div class="border p-3 bg-light">
-          <p id="resume2" class="mb-4 text-justify"></p>
+          <img id="image" class="img-fluid rounded mb-4 image-align-left" />
+          <p id="image-chargement" class="text-muted text-center"></p>
+          <p id="resume" class="mb-4 text-justify">
+            <img id="image" class="img-fluid rounded mb-4 image-align-left" />
+          </p>
         </div>
       </div>
     </div>
-    <div class="row justify-content-center">
+
+
+    <div class="col-md-4 mx-auto">
       <a id="pageWikipedia" class="btn btn-primary mx-auto mt-4" style="display: none;" target="_blank">More on
         Wikipedia</a>
     </div>
 
-    <h2 id="more" class="mt-5 text-center text-primary" style="display: none;">Further information</h2>
-    <h3 id="titleTable" class="mt-5 text-center text-primary" style="display: none;" >Scientists with the same academic discipline</h3>
-    <div id="tableau"  style="max-height: 500px; overflow: scroll; display: none">
+    <h3 id="titleTable" class="mt-5 text-center text-primary" style="display: none;">Scientists with the same academic
+      discipline</h3>
+    <div id="tableau" style="max-height: 500px; overflow: scroll; display: none">
 
-      <div id="scientifiques" class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-sm-2 row-cols-xl-5 g-4" >
+      <div id="scientifiques" class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-sm-2 row-cols-xl-5 g-4">
 
       </div>
       <!--table class="table table-bordered table-hover table-striped" id="scientifiques">
@@ -94,8 +112,7 @@
           let text1 = text.substring(0, index);
           let text2 = text.substring(index + 1);
           // Attribution des deux parties de texte aux éléments #resume et #resume2
-          document.getElementById('resume').innerText = text1;
-          document.getElementById('resume2').innerText = text2;
+          document.getElementById('resume').innerText = text;
         }
 
       });
@@ -104,20 +121,19 @@
         var image = document.querySelector('#image');
         $("#image-chargement").html('');
         if (response.results.bindings != undefined && response.results.bindings.length > 0) {
-          
+
           image.setAttribute("src", response.results.bindings[0].o.value);
-          
+
         }
         else {
           image.setAttribute("src", "/assets/img/domain.ico");
-          
+
         }
       });
 
-      rechercherScientifique("dbr:"+domain, "#scientifiques", function(){
-          document.querySelector("#tableau").style.display = "block";
-          document.querySelector("#more").style.display = "block";
-          document.querySelector("#titleTable").style.display = "block";
+      rechercherScientifique("dbr:" + domain, "#scientifiques", function () {
+        document.querySelector("#tableau").style.display = "block";
+        document.querySelector("#titleTable").style.display = "block";
       });
       /*
       rechercherScientifique("dbr:" + domain, function (response) {

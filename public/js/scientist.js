@@ -110,17 +110,10 @@ function afficherScientist(response)
         //element = response.results.bindings[0].description.value;
         //resume.innerHTML = element;
         var text = response.results.bindings[0].description.value;
-        // Recherche de l'index du dernier espace avant la moitié du texte
-        let index = text.lastIndexOf(' ', text.length / 2);
-        // Division du texte en deux parties
-        let text1 = text.substring(0, index);
-        let text2 = text.substring(index + 1);
         // Attribution des deux parties de texte aux éléments #resume et #resume2
-        document.getElementById('resume').innerText = text1;
-        document.getElementById('resume2').innerText = text2;
+        document.getElementById('resume').innerText = text;
     } else{
         document.getElementById("resume").style.display = "none";
-        document.getElementById("resume2").style.display = "none";
     }   
     if(response.results.bindings[0].hasOwnProperty("thumbnail")){
         var image = document.querySelector('#image');
@@ -327,7 +320,7 @@ function afficherScientist(response)
 }
 
 function afficherDoctorant(response, increment, parentName){
-    console.log(response)
+    //console.log(response)
 
     if(response.results.bindings[0].doctoralStudents.value != ''){
         var data = response.results.bindings[0].doctoralStudents.value.split(';');

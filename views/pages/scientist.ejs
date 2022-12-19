@@ -10,7 +10,35 @@
     .col-md-4 {
       text-align: center;
     }
+
+    .image-align-left {
+      float: left;
+    }
+
+    .image-align-right {
+      float: right;
+    }
+
+    #image {
+      margin-right: 20px;
+      margin-bottom: 0px;
+    }
+
+    #resume {
+      text-align: justify;
+    }
+
+    .float-content:before,
+    .float-content:after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+    .border {
+      overflow: hidden;
+    }
   </style>
+
 
   <div class="container mt-5">
     <div class="row">
@@ -19,38 +47,25 @@
       </div>
     </div>
     <div class="row d-flex align-items-center justify-content-center">
-      <div class="col-md-4 mx-auto">
+      <div class="mx-auto">
         <div class="border p-3 w-100 bg-light">
-          <p id="resume" class="mb-4 text-justify"></p>
-        </div>
-      </div>
-      <div class="col-md-4 mx-auto text-center">
-        <img id="image" class="img-fluid rounded mb-4" />
-        <p id="image-chargement" class="text-muted text-center"></p>
-        <p id="dateNaissance"></p>
-        <div id="conjointDiv">
-          
-          <a id="conjoint"></a>
-        </div>
-        <div id="birthPlaceValue">
-
-        </div>
-      </div>
-      <div class="col-md-4 mx-auto">
-        <div class="border p-3 bg-light">
-          <p id="resume2" class="mb-4 text-justify"></p>
+          <img id="image" class="img-fluid rounded mb-4 image-align-left" />
+          <div class="text-muted">
+            <div id="dateNaissance"></div>
+            <div id="conjointDiv"><a id="conjoint"></a></div>
+            <div id="birthPlaceValue"></div>
+          </div>
+          <p id="image-chargement" class="text-muted text-center"></p>
+          <p id="resume" class="mb-4 text-justify">
+          </p>
         </div>
       </div>
     </div>
-
-
-
-    <div class="row justify-content-center">
+    
+    <div class="col-md-4 mx-auto">
       <a id="pageWikipedia" class="btn btn-primary mx-auto mt-4" style="display: none;" target="_blank">More on
         Wikipedia</a>
     </div>
-
-    <h2 id="more" class="mt-5 text-center text-primary" style="display: none;">Further information</h2>
     <br />
     <h3 id="titleTableStudent" class="mt-5 text-center text-primary" style="display: none;">PhD students</h3>
     <br />
@@ -77,12 +92,12 @@
     <br />
     <h3 id="titleTableAwards" class="mt-5 text-center text-primary" style="display: none;">Awards</h3>
     <br />
-    <div id="tableauAwards" style="max-height: 500px; display: none">
+    <div id="tableauAwards" style="overflow:scroll; max-height: 500px; display: none">
       <div id="awards" class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-sm-2 row-cols-xl-5 g-4">
       </div>
     </div>
 
-    <br/>
+    <br />
     <div class="tree" id="genetree">
       <ul>
       </ul>
