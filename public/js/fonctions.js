@@ -340,69 +340,7 @@ function rechercherScientifique(objet, idTableau, callback) {
       });
   });
 }
-/*
-function rechercherScientifique(objet, callback) {
-  var requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
-                              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-                              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-                              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                              PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-                              PREFIX dc: <http://purl.org/dc/elements/1.1/>
-                              PREFIX : <http://dbpedia.org/resource/>
-                              PREFIX dbpedia2: <http://dbpedia.org/property/>
-                              PREFIX dbpedia: <http://dbpedia.org/>
-                              PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-                              \n
-                              SELECT ?p WHERE {
-                              ?p dbo:academicDiscipline ${objet}.
-                              ?p rdf:type foaf:Person.
-                              ?p rdf:type dbo:Scientist.            
-                              ?p dbo:wikiPageWikiLink ?links.
-                              
-                              }
-                              ORDER BY desc(COUNT(?links))`;
 
-
-  // Encodage de l'URL à transmettre à DBPedia
-  var url_base = "http://dbpedia.org/sparql/";
-  $(document).ready(function () {
-    $.ajax({
-      //L'URL de la requête 
-      url: url_base,
-
-      //La méthode d'envoi (type de requête)
-      method: "GET",
-
-      //Le format de réponse attendu
-      dataType: "json",
-      data: { query: requete },
-    })
-
-      /*Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done().
-        On peut par exemple convertir cette réponse en chaine JSON et insérer
-        cette chaine dans un div id="res"
-      
-      .done(function (response) {
-        // let data = (response);
-        console.log("rep ", response);
-        callback(response);
-      })
-
-      /* Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
-        On peut afficher les informations relatives à la requête et à l'erreur 
-      
-      .fail(function (error) {
-        alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
-      })
-
-      // Ce code sera exécuté que la requête soit un succès ou un échec
-      .always(function () {
-        //alert("Requête effectuée");
-
-      });
-  });
-}
-*/
 function rechercherDoctoralSudent(scientistName, increment){
   increment -= 1;
   decodeURIComponent(scientistName);

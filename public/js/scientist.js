@@ -214,6 +214,7 @@ function afficherScientist(response)
         const li = document.createElement('li');
         li.setAttribute("id", response.results.bindings[0].name.value.replaceAll(' ', '_'))
         ul.appendChild(li);
+        
         const a = document.createElement('a');
         a.innerHTML = response.results.bindings[0].name.value;
         a.setAttribute("href", "/scientist/"+response.results.bindings[0].name.value.replaceAll(' ', '_'));
@@ -226,6 +227,11 @@ function afficherScientist(response)
 
 function afficherDoctorant(response, increment, parentName){
     //console.log(response)
+    const li_parent = document.querySelector('#'+parentName);
+  /*   var img = document.createElement('img');
+    img.setAttribute("onerror","this.src='/assets/img/scientist.ico'");
+    img.setAttribute("src",response.results.bindings[0].image.value);
+    li_parent.appendChild(img); */
 
     if(response.results.bindings[0].doctoralStudents.value != ''){
         var data = response.results.bindings[0].doctoralStudents.value.split(';');
@@ -233,8 +239,7 @@ function afficherDoctorant(response, increment, parentName){
         //const tbody = document.querySelector('#genealogie tbody');
         var ul = document.querySelector('#'+parentName+' ul');
         console.log(parentName);
-        if(ul==null){
-            const li_parent = document.querySelector('#'+parentName);
+        if(ul==null){            
             ul = document.createElement('ul');
             li_parent.appendChild(ul);
         }
