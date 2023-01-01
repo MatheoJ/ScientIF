@@ -100,15 +100,8 @@ function afficherScientist(response)
         var lien = document.querySelector('#pageWikipedia');
         lien.setAttribute("href", response.results.bindings[0].isPrimaryTopicOf.value);
         lien.style.display = "block";
-    }/* 
-    else{
-        document.getElementById("pageWikipedia").style.display = "none";
     }
-    */
     if(response.results.bindings[0].hasOwnProperty("description")){
-        //var resume = document.querySelector('#resume');
-        //element = response.results.bindings[0].description.value;
-        //resume.innerHTML = element;
         var text = response.results.bindings[0].description.value;
         // Attribution des deux parties de texte aux éléments #resume et #resume2
         document.getElementById('resume').innerText = text;
@@ -129,21 +122,12 @@ function afficherScientist(response)
         var date = document.querySelector('#dateNaissance');
         date.style.display = "block";
         date.innerHTML= "Born on the "+response.results.bindings[0].date.value;
-    }/* 
-    else{
-        document.getElementById("dateNaissance").style.display = "none";
     }
-    */ 
-
     if(response.results.bindings[0].hasOwnProperty("birthPlace")){
         var place = document.querySelector('#birthPlaceValue');
         place.style.display = "block";
         place.innerHTML= "Place of birth : "+response.results.bindings[0].birthPlace.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
-    }/* 
-    else{
-        document.getElementById("birthPlaveValue").style.display = "none";
     }
-    */
     if(response.results.bindings[0].hasOwnProperty("conjointScientist")){
         var lien = document.querySelector('#conjoint');
         var conjointLien = response.results.bindings[0].conjointScientist.value;
@@ -156,11 +140,6 @@ function afficherScientist(response)
         lien.style.display = "block";
         lien.innerHTML = "Life partner : " + response.results.bindings[0].conjoint.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
     }
-    /* 
-    else{
-        document.getElementById("conjointDiv").style.display = "none";
-    }
-    */
     if(response.results.bindings[0].disciplines.value != ''){        
         var data = response.results.bindings[0].disciplines.value.split(';');
         
@@ -177,24 +156,7 @@ function afficherScientist(response)
             
             afficherInformations(response, "#disciplines", "domain");
         });
-        /*
-        // Récupérez l'élément <tbody>
-        const tbody = document.querySelector('#disciplines tbody');
-        // Insérez les données dans le tableau
-        for (const row of data) {
-            const tr = document.createElement('tr');
-
-            const td = document.createElement('td');
-            const a = document.createElement("a");
-            a.href = "/domain/"+row.replace('http://dbpedia.org/resource/', '');
-            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
-            td.appendChild(a);
-            tr.appendChild(td);
-            tbody.appendChild(tr);
-        }*/
-    }/*else{
-        document.getElementById("concepts").style.display = "none";
-    }*/
+    }
     if(response.results.bindings[0].doctoralStudents.value != ''){   
         var data = response.results.bindings[0].doctoralStudents.value.split(';');
         var data = `{ ${data.map(name => `(${name
@@ -211,29 +173,7 @@ function afficherScientist(response)
             
             afficherInformations(response, "#students", "scientist");
         });
-        
-        
-        /*
-        // Récupérez l'élément <tbody>
-        const tbody2 = document.querySelector('#doctorants tbody');
-        // Insérez les données dans le tableau
-        for (const row of data) {
-            const tr = document.createElement('tr');
-
-            const td = document.createElement('td');
-            const a = document.createElement("a");
-            var name = row.replace('http://dbpedia.org/resource/', '');
-            name = encodeURIComponent(name);
-            a.href = "/scientist/"+name;
-            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
-            td.appendChild(a);
-            tr.appendChild(td);
-            tbody2.appendChild(tr);
-        } 
-        */
-    } /*else {
-        document.getElementById("doctorants").style.display = "none";
-    }*/
+    } 
     if(response.results.bindings[0].concepts.value != ''){        
         var data = response.results.bindings[0].concepts.value.split(';');
 
@@ -250,26 +190,7 @@ function afficherScientist(response)
             
             afficherInformations(response, "#concepts", "concept");
         });
-        /*
-        // Récupérez l'élément <tbody>
-        const tbody = document.querySelector('#concepts tbody');
-        // Insérez les données dans le tableau
-        for (const row of data) {
-            const tr = document.createElement('tr');
-
-            const td = document.createElement('td');
-            const a = document.createElement("a");
-            console.log(row);
-            a.href = "/concept/"+row.replace('http://dbpedia.org/resource/', '');
-            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
-            td.appendChild(a);
-            tr.appendChild(td);
-            tbody.appendChild(tr);
-        }
-        */
-    } /*else {
-        document.getElementById("concepts").style.display = "none";
-    }*/
+    } 
     if(response.results.bindings[0].awards.value != ''){        
         var data = response.results.bindings[0].awards.value.split(';');
 
@@ -286,37 +207,21 @@ function afficherScientist(response)
             
             afficherInformations(response, "#awards", "award");
         });
-        
-        /*
-        // Récupérez l'élément <tbody>
-        const tbody = document.querySelector('#awards tbody');
-        // Insérez les données dans le tableau
-        for (const row of data) {
-            const tr = document.createElement('tr');
-
-            const td = document.createElement('td');
-            const a = document.createElement("a");
-            console.log(row);
-            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
-            td.appendChild(a);
-            tr.appendChild(td);
-            tbody.appendChild(tr);
-        }
-        */
-    } /*else {
-        document.getElementById("awards").style.display = "none";
-    }  */
-
-    rechercherDoctoralSudent(response.results.bindings[0].name.value, 5);  
-    const ul = document.querySelector('#genetree ul'); 
-    const li = document.createElement('li');
-    li.setAttribute("id", response.results.bindings[0].name.value.replaceAll(' ', '_'))
-    ul.appendChild(li);
-    const a = document.createElement('a');
-    a.innerHTML = response.results.bindings[0].name.value;
-    li.appendChild(a);
-    const ul2 = document.createElement('ul');
-    li.appendChild(ul2);
+    }
+    if(response.results.bindings[0].doctoralStudents.value != ''){
+        document.querySelector('#genetree_title').style.display = "block";
+        const ul = document.querySelector('#genetree ul'); 
+        const li = document.createElement('li');
+        li.setAttribute("id", response.results.bindings[0].name.value.replaceAll(' ', '_'))
+        ul.appendChild(li);
+        const a = document.createElement('a');
+        a.innerHTML = response.results.bindings[0].name.value;
+        a.setAttribute("href", "/scientist/"+response.results.bindings[0].name.value.replaceAll(' ', '_'));
+        li.appendChild(a);
+        const ul2 = document.createElement('ul');
+        li.appendChild(ul2);
+        rechercherDoctoralSudent(response.results.bindings[0].name.value, 5);  
+    }
 }
 
 function afficherDoctorant(response, increment, parentName){
@@ -326,27 +231,22 @@ function afficherDoctorant(response, increment, parentName){
         var data = response.results.bindings[0].doctoralStudents.value.split(';');
         // Récupérez l'élément <tbody>
         //const tbody = document.querySelector('#genealogie tbody');
-        const ul = document.querySelector('#'+parentName+' ul');
+        var ul = document.querySelector('#'+parentName+' ul');
         console.log(parentName);
+        if(ul==null){
+            const li_parent = document.querySelector('#'+parentName);
+            ul = document.createElement('ul');
+            li_parent.appendChild(ul);
+        }
         // Insérez les données dans le tableau
         for (const row of data) {
-            /* const tr = document.createElement('tr');
-            const td = document.createElement('td');
-            const a = document.createElement("a");
-            console.log(row);
-            a.href = "/scientist/"+row.replace('http://dbpedia.org/resource/', '');
-            a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
-            td.appendChild(a);
-            tr.appendChild(td);
-            tbody.appendChild(tr); */
             const li = document.createElement('li');
             li.setAttribute("id", row.replace('http://dbpedia.org/resource/', '').replaceAll(' ', '_'))
             ul.appendChild(li);
             const a = document.createElement('a');
             a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+            a.setAttribute("href", "/scientist/"+row.replace('http://dbpedia.org/resource/', ''));
             li.appendChild(a);
-            const ul2 = document.createElement('ul');
-            li.appendChild(ul2);
             if(increment>0){
                 rechercherDoctoralSudent(row.replace('http://dbpedia.org/resource/', ''), increment);
             }

@@ -423,18 +423,9 @@ function rechercherDoctoralSudent(scientistName, increment){
         PREFIX dbpedia: <http://dbpedia.org/>
         PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
         \n
-        SELECT GROUP_CONCAT(DISTINCT ?discipline;separator =";") AS ?disciplines 
-        GROUP_CONCAT(DISTINCT ?doctoralStudent;separator =";") AS ?doctoralStudents
-        ?name 
-        ?description 
-        ?date WHERE {
-            :${scientistName} rdfs:label ?name.
-            OPTIONAL{:${scientistName} dbo:academicDiscipline ?discipline}
-            OPTIONAL{:${scientistName} dbo:birthDate ?date}
-            OPTIONAL{:${scientistName} dbo:abstract ?description}
-            OPTIONAL{:${scientistName} dbo:doctoralStudent ?doctoralStudent}
-            FILTER(langMatches(lang(?description),"EN"))
-            FILTER(langMatches(lang(?name),"EN"))
+        SELECT GROUP_CONCAT(DISTINCT ?doctoralStudent;separator =";") AS ?doctoralStudents
+        WHERE {
+          OPTIONAL{:${scientistName} dbo:doctoralStudent ?doctoralStudent}
         }`;
         // Encodage de l'URL à transmettre à DBPedia
 var url_base = "http://dbpedia.org/sparql/";
