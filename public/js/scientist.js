@@ -274,8 +274,8 @@ function obtenirDonneesTableau(data,  callback){
   PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
   \n
   SELECT DISTINCT ?image ?p WHERE {
-    VALUES (?p) ${data}
-    ?p dbo:thumbnail ?image .
+    VALUES (?p) ${data}.
+    OPTIONAL{ ?p dbo:thumbnail ?image }
   }
   `;
   
@@ -324,7 +324,12 @@ function afficherInformations(data, idTableau, redirectPage="scientist") {
         `<div class='col-6 mb-3'>
           <div class='card card-lg card-sm-down-md' >`;
             if(redirectPage != "award") contenuTableau += `<a href="/${redirectPage}/${r.p.value.substring(r.p.value.lastIndexOf("/") + 1)}">`;
-             contenuTableau += ` <img src="${r.image.value}" onerror="this.src='/assets/img/${redirectPage}.ico'" width="300" height="auto" class="card-img-top" alt="..." />`
+            if(r.hasOwnProperty("image")) {
+                contenuTableau += ` <img src="${r.image.value}" onerror="this.src='/assets/img/${redirectPage}.ico'" width="300" height="auto" class="card-img-top" alt="..." />`;
+            }
+            else{
+                contenuTableau += ` <img src="/assets/img/${redirectPage}.ico" width="300" height="auto" class="card-img-top" alt="..." />`;
+            }
             if(redirectPage != "award") contenuTableau += `</a>`;
 
             contenuTableau += `<div class='card-body'>
