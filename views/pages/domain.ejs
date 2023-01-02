@@ -58,22 +58,13 @@
         Wikipedia</a>
     </div>
 
-    <h3 id="titleTable" class="mt-5 text-center text-primary" style="display: none;">Scientists with the same academic
+    <h3 id="titleTable" class="mt-5 text-center text-primary" style="display: none;">Scientists related to this academic
       discipline</h3>
     <div id="tableau" style="max-height: 500px; overflow: scroll; display: none">
 
       <div id="scientifiques" class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-sm-2 row-cols-xl-5 g-4">
 
       </div>
-      <!--table class="table table-bordered table-hover table-striped" id="scientifiques">
-        <thead class="thead-dark">
-          <tr>
-            <th>Scientists with this field of study</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table-->
     </div>
   </div>
 
@@ -135,46 +126,8 @@
         document.querySelector("#tableau").style.display = "block";
         document.querySelector("#titleTable").style.display = "block";
       });
-      /*
-      rechercherScientifique("dbr:" + domain, function (response) {
-        var input = response.results.bindings;
-        var data = input.map(function (item) {
-          return item.p.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
-        });
-
-        if (data.length > 0) {
-          document.querySelector("#tableau").style.display = "block";
-          document.querySelector("#more").style.display = "block";
-          afficherScientifiquesDomaine(data, '#tableau');
-        
-          
-          // Récupérez l'élément <tbody>
-          const tbody = document.querySelector('#scientifiques tbody');
-          // Insérez les données dans le tableau
-          for (const row of data) {
-            const tr = document.createElement('tr');
-
-            const td = document.createElement('td');
-            const a = document.createElement("a");
-            a.href = "/scientist/" + row.replaceAll(' ', '_');
-            a.innerHTML = row;
-            td.appendChild(a);
-            tr.appendChild(td);
-            tbody.appendChild(tr);
-          }
-        }
-        
-      });
-      */
     
     <% } %>
-    // Get the query string from the URL
-    //var searchParams = new URLSearchParams(window.location.search);
-    // Get the value of the "param1" parameter
-    //var domain = searchParams.get("domain_name");
-    // Do something with the value of the parameter
-
-
   </script>
 
 

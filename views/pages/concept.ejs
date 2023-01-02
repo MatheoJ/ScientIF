@@ -72,15 +72,7 @@
                 class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-sm-2 row-cols-xl-5 g-4">
 
             </div>
-            <!--table class="table table-bordered table-hover table-striped" id="scientifiques">
-        <thead class="thead-dark">
-          <tr>
-            <th>Scientists with this field of study</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table-->
+   
         </div>
         <br />
         <h3 id="titleTableConcepts" class="mt-5 text-center text-primary" style="display: none;">Other concepts related
@@ -88,15 +80,7 @@
         <br />
         <div id="tableauConcepts" style="max-height: 500px; overflow: scroll; display: none">
             <div id="concepts" class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-sm-2 row-cols-xl-5 g-4">
-                <!--table class="table table-bordered table-hover" id="concepts">
-            <thead>
-                <tr>
-                    <th>Other concepts related</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table-->
+
             </div>
         </div>
     </div>
@@ -151,65 +135,10 @@
 
             });
 
-            /*
-            rechercherInventeur("dbr:" + domain, function (response) {
-                var input = response.results.bindings;
-                var data = input.map(function (item) {
-                    return item.p.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
-                });
-                data = Array.from(new Set(data));
-                if (data.length > 0) {
-                    document.querySelector("#more").style.display = "block";
-                    document.querySelector("#tableauScientifiques").style.display = "block";
-                    // Récupérez l'élément <tbody>
-                    const tbody = document.querySelector('#scientifiques tbody');
-                    // Insérez les données dans le tableau
-                    for (const row of data) {
-                        const tr = document.createElement('tr');
-                        const td = document.createElement('td');
-                        const a = document.createElement("a");
-                        console.log(row);
-                        a.href = "/scientist/" + row.replaceAll(' ', '_');
-                        a.innerHTML = row;
-                        td.appendChild(a);
-                        tr.appendChild(td);
-                        tbody.appendChild(tr);
-                    }
-                }
-
-            });
-            */
             rechercherConcept("dbr:" + domain, "#concepts", function () {
                 document.querySelector("#tableauConcepts").style.display = "block";
                 document.querySelector("#titleTableConcepts").style.display = "block";
             })
-                /*
-                rechercherTout("dbr:" + domain, "rdfs:seeAlso", null, function (response) {
-                    var input = response.results.bindings;
-                    var data = input.map(function (item) {
-                        return item.o.value.replace('http://dbpedia.org/resource/', '').replace('_', ' ');
-                    });
-                    if (data.length > 0) {
-                        document.querySelector("#more").style.display = "block";
-                        document.querySelector("#tableauConcepts").style.display = "block";
-                        // Récupérez l'élément <tbody>
-                        const tbody = document.querySelector('#concepts tbody');
-                        // Insérez les données dans le tableau
-                        for (const row of data) {
-                            const tr = document.createElement('tr');
-                            const td = document.createElement('td');
-                            const a = document.createElement("a");
-                            a.href = "/concept/" + row.replace(' ', '_');
-                            a.innerHTML = row;
-                            td.appendChild(a);
-                            tr.appendChild(td);
-                            tbody.appendChild(tr);
-                        }
-                    }
-    
-                });
-                */
-
 
                 <% } %>
 

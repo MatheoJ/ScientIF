@@ -491,73 +491,7 @@ function rechercherInventeur(sujet, idTableau, callback) {
       });
   });
 }
-/*
-function rechercherInventeur(sujet, callback){
-  var requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
-                          PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-                          PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-                          PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                          PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-                          PREFIX dc: <http://purl.org/dc/elements/1.1/>
-                          PREFIX : <http://dbpedia.org/resource/>
-                          PREFIX dbpedia2: <http://dbpedia.org/property/>
-                          PREFIX dbpedia: <http://dbpedia.org/>
-                          PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-                          \n
-                          SELECT ?p WHERE {
-                            {
-                              ${sujet} dbo:wikiPageWikiLink ?p.
-                              ?p rdf:type foaf:Person.  
-                              ?p rdf:type dbo:Scientist.                  
-                              ?p dbo:wikiPageWikiLink ?links.
-                            }
-                            UNION
-                            {
-                              ${sujet} dbo:wikiPageWikiLink ?p1.
-                              ?p1 dbo:wikiPageRedirects ?p.
-                              ?p rdf:type foaf:Person.  
-                              ?p rdf:type dbo:Scientist.                  
-                              ?p dbo:wikiPageWikiLink ?links.
-                              FILTER(?p != ?p1)
-                            }
-                          }
-                          ORDER BY desc(COUNT(?links))
-                          `;
 
-  // Encodage de l'URL à transmettre à DBPedia
-  var url_base = "http://dbpedia.org/sparql/";
-  $(document).ready(function(){
-      $.ajax({
-          //L'URL de la requête 
-          url: url_base,
-
-          //La méthode d'envoi (type de requête)
-          method: "GET",
-
-          //Le format de réponse attendu
-          dataType : "json",
-          data : {query : requete}
-      })
-      //Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done()
-      /*On peut par exemple convertir cette réponse en chaine JSON et insérer
-      * cette chaine dans un div id="res"
-      .done(function(response){
-          callback(response);
-      })
-
-      //Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
-      //On peut afficher les informations relatives à la requête et à l'erreur
-      .fail(function(error){
-        resultats = null;
-          alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
-      })
-      //Ce code sera exécuté que la requête soit un succès ou un échec
-      .always(function(){
-          //alert("Requête effectuée");
-      });
-  });
-}
-*/
 function afficherChargement(zone, texte) {
   zone.html(
     ` <div>
@@ -662,44 +596,3 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
   }
   activerCollapsibleTexts();
 }
-
-/*
-// Affichage des résultats dans un tableau
-function afficherAutresConcepts(data, idTableau) {
-  // Tableau pour mémoriser l'ordre des variables
-  console.log(data);
-
-  var contenuTableau = "";
-
-  data.results.bindings.forEach(r => {
-    disciplines = r.disciplines.value.split(", ");
-    contenuTableau +=
-      `<div class='col mb-3'>
-        <div class='card'>
-          <!-- <img src="..." class="card-img-top" alt="..."> -->
-          <div class='card-body'>
-            <h5 class='card-title text-center'>
-              <a class="link-dark text-decoration-none" href="/concept/${r.p.value.substring(r.p.value.lastIndexOf("/") + 1)}">${r.name.value}</a>
-            </h5>
-            <div class="card-subtitle mb-2 text-center">`;
-
-    contenuTableau +=
-      `</div>`;
-    contenuTableau += `
-            <div class="text-center">
-              <a href='${r.wikipedia.value}' class='btn btn-primary' target='_blank'>Wikipedia</a>
-            </div>
-          </div>
-        </div>
-       </div>`
-  });
-
-  if (contenuTableau == "") {
-    $(idTableau).html("Aucun résultat.");
-  }
-  else {
-    $(idTableau).html(contenuTableau);
-  }
-  activerCollapsibleTexts();
-}
-*/
