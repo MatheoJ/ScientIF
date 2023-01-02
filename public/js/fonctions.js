@@ -344,10 +344,13 @@ function rechercherScientifique(objet, idTableau, callback) {
 function rechercherDoctoralSudent(scientistName, increment){
   increment -= 1;
   decodeURIComponent(scientistName);
+  scientistName = scientistName.replaceAll(' ', '_');  
   scientistName = scientistName.replaceAll('(', '\\(');
   scientistName = scientistName.replaceAll(')', '\\)');
-  scientistName = scientistName.replaceAll(',', '\\,');
-  scientistName = scientistName.replaceAll(' ', '_');
+  scientistName = scientistName.replaceAll(',', '\\,');  
+  scientistName = scientistName.replaceAll("&#39;", "\\'");
+  scientistName = scientistName.replaceAll("'", "\\'");
+  scientistName = scientistName.replaceAll(".", "\\.");
   console.log(scientistName);
   var requete = `
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -362,8 +365,10 @@ function rechercherDoctoralSudent(scientistName, increment){
         PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
         \n
         SELECT GROUP_CONCAT(DISTINCT ?doctoralStudent;separator =";") AS ?doctoralStudents
+        ?image
         WHERE {
           OPTIONAL{:${scientistName} dbo:doctoralStudent ?doctoralStudent}
+          OPTIONAL{:${scientistName} dbo:thumbnail ?image }
         }`;
         // Encodage de l'URL à transmettre à DBPedia
 var url_base = "http://dbpedia.org/sparql/";

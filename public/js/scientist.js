@@ -4,7 +4,8 @@ function rechercherScientist(scientistName, callback){
     decodeURIComponent(scientistName);
     scientistName = scientistName.replaceAll('(', '\\(');
     scientistName = scientistName.replaceAll(')', '\\)');
-    scientistName = scientistName.replaceAll(',', '\\,');
+    scientistName = scientistName.replaceAll(',', '\\,');    
+    scientistName = scientistName.replaceAll(".", "\\.");
     scientistName = scientistName.replaceAll("&#39;", "\\'");
   
     //console.log(scientistName);
@@ -226,12 +227,22 @@ function afficherScientist(response)
 }
 
 function afficherDoctorant(response, increment, parentName){
-    //console.log(response)
+    console.log("parentName "+parentName)
+    //parentName=parentName.replaceAll('.','\.');
     const li_parent = document.querySelector('#'+parentName);
-  /*   var img = document.createElement('img');
-    img.setAttribute("onerror","this.src='/assets/img/scientist.ico'");
-    img.setAttribute("src",response.results.bindings[0].image.value);
-    li_parent.appendChild(img); */
+    const a_parent = document.querySelector('#'+parentName+ " a");
+    var p = document.createElement('p');
+    var img = document.createElement('img');
+    if(response.results.bindings[0].hasOwnProperty("image")){
+        img.setAttribute("onerror","this.src='/assets/img/scientist.ico'");
+        img.setAttribute("src",response.results.bindings[0].image.value);
+    }
+    else{
+        img.setAttribute("src","/assets/img/scientist.ico");
+    }
+    img.setAttribute("width",50);
+    p.appendChild(img);
+    a_parent.appendChild(p);
 
     if(response.results.bindings[0].doctoralStudents.value != ''){
         var data = response.results.bindings[0].doctoralStudents.value.split(';');
@@ -246,7 +257,7 @@ function afficherDoctorant(response, increment, parentName){
         // Insérez les données dans le tableau
         for (const row of data) {
             const li = document.createElement('li');
-            li.setAttribute("id", row.replace('http://dbpedia.org/resource/', '').replaceAll(' ', '_'))
+            li.setAttribute("id", row.replace('http://dbpedia.org/resource/', '').replaceAll(' ', '_'));
             ul.appendChild(li);
             const a = document.createElement('a');
             a.innerHTML = row.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
@@ -345,4 +356,4 @@ function afficherInformations(data, idTableau, redirectPage="scientist") {
     });
     $(idTableau).html(contenuTableau);
     activerCollapsibleTexts();
-  }
+}
