@@ -1,14 +1,25 @@
 /* Requête générale, permettant de rechercher par nom uniquement */
 
 
-
 function rechercher(name) {
-  rechercherNom(name);
-  rechercherDomaine(name);
-  rechercherInvention(name);
+  let completed = 0;
+
+  function callback() {
+    completed++;
+    if (completed === 3 && 
+        document.querySelector("#tableau_dom").style.display === "none" &&  
+        document.querySelector("#tableau_sci").style.display === "none" &&
+        document.querySelector("#tableau_con").style.display === "none") {
+          document.querySelector("#zone-resultats-recherche").innerHTML = "No result found";
+    }
+  }
+  rechercherNom(name, callback);
+  rechercherDomaine(name, callback);
+  rechercherInvention(name, callback);
+
 }
 
-function rechercherNom(name) {
+function rechercherNom(name, callback) {
   var debut_requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
                               PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                               PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -72,6 +83,7 @@ function rechercherNom(name) {
       .done(function (response) {
         // let data = (response);
         afficherResultats(response, "nom");
+        callback();
       })
 
       /* Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
@@ -147,7 +159,7 @@ function rechercherTout(sujet, predicat, objet, callback) {
   });
 }
 
-function rechercherDomaine(domaine) {
+function rechercherDomaine(domaine, callback) {
   var debut_requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
                           PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                           PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -196,6 +208,7 @@ function rechercherDomaine(domaine) {
       .done(function (response) {
         console.log("domaine", response);
         afficherResultats(response, "domaine");
+        callback();
       })
 
       //Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
@@ -210,7 +223,7 @@ function rechercherDomaine(domaine) {
   });
 }
 
-function rechercherInvention(name) {
+function rechercherInvention(name, callback) {
   var debut_requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
                               PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                               PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -259,6 +272,7 @@ function rechercherInvention(name) {
       .done(function (response) {
         // let data = (response);
         afficherResultats(response, "concept");
+        callback();
       })
 
       /* Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
