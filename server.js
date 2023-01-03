@@ -38,6 +38,13 @@ app.get('/domain/:domain_name', (request, response) => {
   })*/
 })
 
+app.get('/award/:award_name', (request, response) => {
+  response.render('pages/award', {award_name: request.params.award_name})
+  /*Requetes.rechercherNom(request.query.mot_cle, function() {
+
+  })*/
+})
+
 app.get('/scientist/:scientist_name', (request, response) => {
   response.render('pages/scientist', {scientist_name: request.params.scientist_name})
   /*Requetes.rechercherNom(request.query.mot_cle, function() {
