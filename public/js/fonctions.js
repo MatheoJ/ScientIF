@@ -3,8 +3,8 @@
 
 
 function rechercher(name) {
-  rechercherDomaine(name);
   rechercherNom(name);
+  rechercherDomaine(name);
   rechercherInvention(name);
 }
 
@@ -160,11 +160,11 @@ function rechercherDomaine(domaine) {
                           PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                           \n
 
-                          SELECT DISTINCT ?type ?name ?label WHERE {
+                          SELECT DISTINCT ?type ?name ?label ?image WHERE {
                             ?n dbo:academicDiscipline ?type .
                             ?type rdfs:label ?label ;
                                   gold:hypernym ?hypernym .
-                            
+                            ?type dbo:thumbnail ?image.
                             filter(regex(?label, "`
                             
   var contenu_requete = domaine;
@@ -194,7 +194,7 @@ function rechercherDomaine(domaine) {
       // On peut par exemple convertir cette réponse en chaine JSON et insérer
       // cette chaine dans un div id="res"
       .done(function (response) {
-        console.log(response);
+        console.log("domaine", response);
         afficherResultats(response, "domaine");
       })
 
@@ -605,7 +605,7 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
 
   if(typeRecherche == "nom" && data) {
     
-    titre = "<h1>Scientifiques</h1>";
+    titre = "<h1>Scientists</h1>";
 
     data.results.bindings.forEach(r => {
 
@@ -650,12 +650,13 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
 
     if(contenuTableau != "") {
       $('#zone-nom-sci').html(titre);
+      document.querySelector("#tableau_sci").style.display = "block";
       $(idTableau).html(""); // enlève le chargement
       $('#zone-resultats-recherche-sci').html(contenuTableau);
     }
   } else if(typeRecherche == "domaine" && data) {
 
-    titre = "<h1>Domaines scientifiques</h1>";
+    titre = "<h1>Academic disciplines</h1>";
 
     data.results.bindings.forEach(r => {
       contenuTableau +=
@@ -663,7 +664,10 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
           <div class='card'>
             <div class='card-body'>
               <h5 class='card-title text-center'>
-                <a class="link-dark text-decoration-none" href="/domain/${r.type.value.substring(r.type.value.lastIndexOf("/")+1)}">${r.type.value.substring(r.type.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
+                <a class="link-dark text-decoration-none" href="/domain/${r.type.value.substring(r.type.value.lastIndexOf("/")+1)}">
+               
+                  <img src="${r.image.value}" tag="img-responsive" onerror="this.src='/assets/img/domain.ico'" width="300" height ="250" class="card-img-top" style="object-fit:cover;" alt="..." /> 
+                  ${r.type.value.substring(r.type.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
               </h5>`;
              
         contenuTableau +=
@@ -674,13 +678,14 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
 
     if(contenuTableau != "") {
       $('#zone-nom-dom').html(titre);
+      document.querySelector("#tableau_dom").style.display = "block";
       $(idTableau).html("");
       $('#zone-resultats-recherche-dom').html(contenuTableau);
     }
   }
   else if(typeRecherche == "concept" && data) {
     // On place le titre
-    titre = "<h1>Inventions</h1>";
+    titre = "<h1>Concepts</h1>";
 
     // On boucle sur les résultats
     data.results.bindings.forEach(r => {
@@ -724,6 +729,7 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
 
     if(contenuTableau != "") {
       $(idTableau).html(""); // enlève le chargement   
+      document.querySelector("#tableau_con").style.display = "block";
       $('#zone-nom-con').html(titre);
       $('#zone-resultats-recherche-con').html(contenuTableau);   
     } 
