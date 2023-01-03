@@ -46,7 +46,10 @@
           <img id="image" onerror="this.src='/assets/img/award.ico'" class="img-fluid rounded mb-4 image-align-left" />
           <div class="text-muted">
             <div id="awardedFor"></div>
-            <div id="mostAwardedDiv"><a id="mostAwarded"></a></div>
+            <div >
+              <div id="mostAwardedDiv" style="display: inline-block"></div>
+              <a id="mostAwarded" style="display: inline-block"></a>
+            </div>
           </div>
           <p id="image-chargement" class="text-muted text-center"></p>
           <p id="resume" class="mb-4 text-justify">
@@ -97,7 +100,7 @@
         var awardedFor = document.querySelector('#awardedFor');
         if (response.results.bindings.length > 0) {
             awardedFor.style.display = "block";
-            awardedFor.innerHTML="Awarded for: "+response.results.bindings[0].o.value;
+            awardedFor.innerHTML="Awarded for : "+response.results.bindings[0].o.value;
         }
       });
       rechercherTout("dbr:" + domain, "dbp:mostAwards", null, function (response) {
@@ -105,9 +108,9 @@
         var mostAwarded = document.querySelector('#mostAwarded');
         var mostAwardedDiv = document.querySelector('#mostAwardedDiv');
         if (response.results.bindings.length > 0) {
-            mostAwarded.style.display = "block";
-            mostAwarded.innerHTML="Most awarded person: "+response.results.bindings[0].o.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
-            mostAwarded.setAttribute("href", response.results.bindings[0].o.value);
+            mostAwardedDiv.innerHTML="Most awarded person : ";
+            mostAwarded.innerHTML = response.results.bindings[0].o.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+            mostAwarded.setAttribute("href", "/scientist/"+response.results.bindings[0].o.value.replace('http://dbpedia.org/resource/', ''));
         }
       });
       rechercherTout("dbr:" + domain, "dbo:abstract", null, function (response) {
