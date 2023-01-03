@@ -3,8 +3,9 @@
 
 
 function rechercher(name) {
+  rechercherDomaine(name);
   rechercherNom(name);
-  // rechercherDomaine(name);
+  rechercherInvention(name);
 }
 
 function rechercherNom(name) {
@@ -209,6 +210,70 @@ function rechercherDomaine(domaine) {
   });
 }
 
+function rechercherInvention(name) {
+  var debut_requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
+                              PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+                              PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                              PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                              PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+                              PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                              PREFIX : <http://dbpedia.org/resource/>
+                              PREFIX dbpedia2: <http://dbpedia.org/property/>
+                              PREFIX dbpedia: <http://dbpedia.org/>
+                              PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                              \n
+                              
+                              SELECT DISTINCT ?n ?image ?resume WHERE {
+                                ?p dbo:knownFor ?n ;
+                                   rdf:type dbo:Scientist .
+                                OPTIONAL { ?n dbo:thumbnail ?image } .
+                                ?n dbo:abstract ?resume .
+                                FILTER(regex(?n, "`
+                                
+  var contenu_requete = name;
+  var fin_requete =             `", "i") && langMatches(lang(?resume), "en"))
+                              }`;
+
+  var requete = debut_requete + contenu_requete + fin_requete;
+
+  // Encodage de l'URL à transmettre à DBPedia
+  var url_base = "http://dbpedia.org/sparql/";
+  $(document).ready(function () {
+    $.ajax({
+      //L'URL de la requête 
+      url: url_base,
+
+      //La méthode d'envoi (type de requête)
+      method: "GET",
+
+      //Le format de réponse attendu
+      dataType: "json",
+      data: { query: requete },
+      beforeSend: afficherChargement($("#zone-resultats-recherche"), "Chargement")
+    })
+
+      /*Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done().
+        On peut par exemple convertir cette réponse en chaine JSON et insérer
+        cette chaine dans un div id="res"
+      */
+      .done(function (response) {
+        // let data = (response);
+        afficherResultats(response, "concept");
+      })
+
+      /* Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
+        On peut afficher les informations relatives à la requête et à l'erreur 
+      */
+      .fail(function (error) {
+        alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
+      })
+
+      // Ce code sera exécuté que la requête soit un succès ou un échec
+      .always(function () {
+        //alert("Requête effectuée");
+      });
+  });
+}
 
 function rechercherConcept(sujet, idTableau, callback) {
   var requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -509,10 +574,11 @@ function cacherChargement(zone) {
 
 function afficherInformations(data, idTableau, redirectPage="scientist") {
   var contenuTableau = "";
+
   data.results.bindings.forEach(r => {
     contenuTableau +=
       `<div class='col-6 mb-3'>
-        <div class='card card-lg card-sm-down-md' >
+        <div class='card card-lg card-sm-down-md'>
           <a href="/${redirectPage}/${r.p.value.substring(r.p.value.lastIndexOf("/") + 1)}">
             <img src="${r.image.value}" onerror="this.src='/assets/img/${redirectPage}.ico'" width="300" height="auto" class="card-img-top" alt="..." /> 
           </a>
@@ -524,6 +590,7 @@ function afficherInformations(data, idTableau, redirectPage="scientist") {
         </div>
       </div>`;
   });
+
   $(idTableau).html(contenuTableau);
   activerCollapsibleTexts();
 }
@@ -533,48 +600,134 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
   // Tableau pour mémoriser l'ordre des variables
   console.log('donnees',data);
 
+  var titre = "";
   var contenuTableau = "";
 
-  if(typeRecherche == "nom") {
+  if(typeRecherche == "nom" && data) {
+    
+    titre = "<h1>Scientifiques</h1>";
+
     data.results.bindings.forEach(r => {
-      
+
       contenuTableau +=
         `<div class='col mb-3'>
           <div class='card'>
           <a  href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}">
-            <img src="${r.image.value}" onerror="this.src='/assets/img/scientist.ico'" width="300" height ="auto" class="card-img-top" alt="..." /> 
+            <img src="${r.image.value}" tag="img-responsive" onerror="this.src='/assets/img/scientist.ico'" width="300" height ="250" class="card-img-top" style="object-fit:cover;" alt="..." /> 
           </a>
             <div class='card-body'>
               <h5 class='card-title text-center'>
                 <a class="link-dark " href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}">${r.p.value.substring(r.p.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
               </h5>`;
-        if(afficherDescription){
+
+        if(afficherDescription) {
           disciplines = r.disciplines.value.split(", ");
         
-            contenuTableau+= `<div class="card-subtitle mb-2 text-center">`;
-        disciplines.forEach(element => {
-          contenuTableau += 
-            `<span class="badge bg-secondary mx-1">
-              <a href="/domain/${element.replaceAll(" ", "_")}" class="link-light">
-              ${element}
-              </a>
-            </span>`;
-        });      
-        contenuTableau +=
-              `</div>
-              <p class='card-text'><span class='more'> ${r.resume.value} </span></p>
-              <!--div class="text-center">
-                <a href='${r.p.value}' class='btn btn-primary' target='_blank'>DBpedia</a>
-              </div-->`;
+          contenuTableau+= `<div class="card-subtitle mb-2 text-center">`;
+
+          disciplines.forEach(element => {
+            contenuTableau += 
+              `<span class="badge bg-secondary mx-1">
+                <a href="/domain/${element.replaceAll(" ", "_")}" class="link-light">
+                ${element}
+                </a>
+              </span>`;
+          });      
+          contenuTableau +=
+                `</div>
+                <p class='card-text'><span class='more'> ${r.resume.value} </p>
+                <!--div class="text-center">
+                  <a href='${r.p.value}' class='btn btn-primary' target='_blank'>DBpedia</a>
+                </div-->`;
       }
       contenuTableau+=`
 
             </div>
           </div>
+        </div>
         </div>`
     });
-  } 
-  else {
+
+    if(contenuTableau != "") {
+      $('#zone-nom-sci').html(titre);
+      $(idTableau).html(""); // enlève le chargement
+      $('#zone-resultats-recherche-sci').html(contenuTableau);
+    }
+  } else if(typeRecherche == "domaine" && data) {
+
+    titre = "<h1>Domaines scientifiques</h1>";
+
+    data.results.bindings.forEach(r => {
+      contenuTableau +=
+        `<div class='col mb-3'>
+          <div class='card'>
+            <div class='card-body'>
+              <h5 class='card-title text-center'>
+                <a class="link-dark text-decoration-none" href="/domain/${r.type.value.substring(r.type.value.lastIndexOf("/")+1)}">${r.type.value.substring(r.type.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
+              </h5>`;
+             
+        contenuTableau +=
+            `</div>
+          </div>
+        </div>`;
+    });
+
+    if(contenuTableau != "") {
+      $('#zone-nom-dom').html(titre);
+      $(idTableau).html("");
+      $('#zone-resultats-recherche-dom').html(contenuTableau);
+    }
+  }
+  else if(typeRecherche == "concept" && data) {
+    // On place le titre
+    titre = "<h1>Inventions</h1>";
+
+    // On boucle sur les résultats
+    data.results.bindings.forEach(r => {
+
+      contenuTableau +=
+        `<div class='col mb-3'>
+          <div class='card'>`
+
+      if(r.image != undefined) {
+        contenuTableau += `
+        <a  href="/concept/${r.n.value.substring(r.n.value.lastIndexOf("/")+1)}">
+        <img src="${r.image.value}" tag="img-responsive" onerror="this.src='/assets/img/concept.ico'" width="300" height ="250" class="card-img-top" style="object-fit:cover;" alt="..." />
+        </a>`;
+      }
+      else {
+        contenuTableau += `
+        <a href="/concept/${r.n.value.substring(r.n.value.lastIndexOf("/")+1)}">
+        <img src="/assets/img/concept.ico" tag="img-responsive" width="300" height ="250" class="card-img-top" style="object-fit:cover;" alt="..." />
+        </a>`;
+      }
+          contenuTableau += `          
+            <div class='card-body'>
+              <h5 class='card-title text-center'>
+                <a class="link-dark" href="/scientist/${r.n.value.substring(r.n.value.lastIndexOf("/")+1)}">${r.n.value.substring(r.n.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
+              </h5>`;
+
+          contenuTableau +=
+            `</div>
+            <p class='card-text'><span class='more'> ${r.resume.value} </p>
+            <!--div class="text-center">
+              <a href='${r.n.value}' class='btn btn-primary' target='_blank'>DBpedia</a>
+            </div-->`;
+
+      contenuTableau +=`
+
+            </div>
+          </div>
+        </div>
+        </div>`
+    });
+
+    if(contenuTableau != "") {
+      $(idTableau).html(""); // enlève le chargement   
+      $('#zone-nom-con').html(titre);
+      $('#zone-resultats-recherche-con').html(contenuTableau);   
+    } 
+  } else {
     data.results.bindings.forEach(r => {
       contenuTableau +=
             `</div>`;
@@ -585,14 +738,14 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
             </div>
           </div>
         </div>
+       </div>
        </div>`
     });
   }
+
   if(contenuTableau == "") {
-    $(idTableau).html("Aucun résultat.");
+    // $(idTableau).html("Aucun résultat.");
   }
-  else {
-    $(idTableau).html(contenuTableau);
-  }
+
   activerCollapsibleTexts();
 }
