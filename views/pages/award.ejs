@@ -1,0 +1,154 @@
+<%- include ('header') %>
+
+  <style>
+    p {
+      hyphens: auto;
+      overflow-wrap: break-word;
+      width: 100%;
+
+    }
+
+    .col-md-4 {
+      text-align: center;
+    }
+    
+  .image-align-left{
+    float : left;
+  }
+  .image-align-right{
+    float : right;
+  }
+    #image {
+    margin-right: 20px;
+    margin-bottom: 0px;
+  }
+  
+  #resume {
+    text-align: justify;
+  }
+  .float-content:before,
+  .float-content:after{content:""; display:block; clear:both;}
+  .border {
+      overflow: hidden;
+  }
+  </style>
+  
+  
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-12 mx-auto text-center">
+        <h1 id="titre" class="display-4 mb-4 text-justify"></h1>
+      </div>
+    </div>
+    <div class="row d-flex align-items-center justify-content-center">
+      <div class="mx-auto">
+        <div class="border p-3 w-100 bg-light">
+          <img id="image" onerror="this.src='/assets/img/award.ico'" class="img-fluid rounded mb-4 image-align-left" />
+          <div class="text-muted">
+            <div id="awardedFor"></div>
+            <div id="mostAwardedDiv"><a id="mostAwarded"></a></div>
+          </div>
+          <p id="image-chargement" class="text-muted text-center"></p>
+          <p id="resume" class="mb-4 text-justify">
+          </p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-4 mx-auto">
+      <a id="pageWikipedia" class="btn btn-primary mx-auto mt-4" style="display: none;" target="_blank">More on
+        Wikipedia</a>
+    </div>
+
+    <h3 id="titleTable" class="mt-5 text-center text-primary" style="display: none;">Scientists who received this award</h3>
+    <div id="tableau" style="max-height: 500px; overflow: scroll; display: none">
+
+      <div id="scientifiques" class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-sm-2 row-cols-xl-5 g-4">
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    <% if (locals.award_name) { %>
+      let domain = '<%= locals.award_name %>';
+      domain = domain.replace(/\(/g, "\\(").replace(/\)/g, "\\)").replace(/&#39;/g, "\\'").replace(/,/g, '\\,');
+      console.log(domain);
+      rechercherTout("dbr:" + domain, "rdfs:label", null, function (response) {
+        var titre = document.querySelector('#titre');
+        var nomPage = document.querySelector("#nomPage");
+
+        var element = (response.results.bindings.length > 0) ? response.results.bindings.find(obj => obj.o["xml:lang"] === "en") : { "o": { "value": "No name found" } };
+        titre.innerHTML = nomPage.innerHTML = element.o.value;
+      });
+
+      rechercherTout("dbr:" + domain, "foaf:isPrimaryTopicOf", null, function (response) {
+        console.log("wiki :", response);
+        var lien = document.querySelector('#pageWikipedia');
+        if (response.results.bindings.length > 0) {
+          lien.style.display = "block";
+          lien.setAttribute("href", response.results.bindings[0].o.value);
+        }
+
+      });
+      rechercherTout("dbr:" + domain, "dbp:awardedFor", null, function (response) {
+        console.log("awardedFor :", response);
+        var awardedFor = document.querySelector('#awardedFor');
+        if (response.results.bindings.length > 0) {
+            awardedFor.style.display = "block";
+            awardedFor.innerHTML="Awarded for: "+response.results.bindings[0].o.value;
+        }
+      });
+      rechercherTout("dbr:" + domain, "dbp:mostAwards", null, function (response) {
+        console.log("mostAwarded :", response);
+        var mostAwarded = document.querySelector('#mostAwarded');
+        var mostAwardedDiv = document.querySelector('#mostAwardedDiv');
+        if (response.results.bindings.length > 0) {
+            mostAwarded.style.display = "block";
+            mostAwarded.innerHTML="Most awarded person: "+response.results.bindings[0].o.value.replace('http://dbpedia.org/resource/', '').replaceAll('_', ' ');
+            mostAwarded.setAttribute("href", response.results.bindings[0].o.value);
+        }
+      });
+      rechercherTout("dbr:" + domain, "dbo:abstract", null, function (response) {
+        console.log("titre : ", response);
+        var resume = document.querySelector('#resume');
+        if (response.results.bindings.length > 0) {
+
+          var text = response.results.bindings.find(obj => obj.o["xml:lang"] === "en").o.value;
+          // Recherche de l'index du dernier espace avant la moitié du texte
+          let index = text.lastIndexOf(' ', text.length / 2);
+
+          // Division du texte en deux parties
+          let text1 = text.substring(0, index);
+          let text2 = text.substring(index + 1);
+          // Attribution des deux parties de texte aux éléments #resume et #resume2
+          document.getElementById('resume').innerText = text;
+        }
+
+      });
+      afficherChargement($("#image-chargement"), "Chargement de l'image");
+      rechercherTout("dbr:" + domain, "dbo:thumbnail", null, function (response) {
+        var image = document.querySelector('#image');
+        $("#image-chargement").html('');
+        if (response.results.bindings != undefined && response.results.bindings.length > 0) {
+
+          image.setAttribute("src", response.results.bindings[0].o.value);
+
+        }
+        else {
+          image.setAttribute("src", "/assets/img/award.ico");
+
+        }
+      });
+
+      rechercherScientifique("dbr:" + domain, "#scientifiques", function () {
+        document.querySelector("#tableau").style.display = "block";
+        document.querySelector("#titleTable").style.display = "block";
+      }, "dbo:award");
+    
+    <% } %>
+  </script>
+
+
+  <%- include ('footer') %>

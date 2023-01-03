@@ -274,7 +274,7 @@ function rechercherConcept(sujet, idTableau, callback) {
   });
 }
 
-function rechercherScientifique(objet, idTableau, callback) {
+function rechercherScientifique(objet, idTableau, callback, predicat = "dbo:academicDiscipline") {
   var requete = `PREFIX owl: <http://www.w3.org/2002/07/owl#>
                               PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                               PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -287,7 +287,7 @@ function rechercherScientifique(objet, idTableau, callback) {
                               PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                               \n
                               SELECT ?p ?name ?image WHERE {
-                              ?p dbo:academicDiscipline ${objet}.
+                              ?p ${predicat} ${objet}.
                               ?p rdf:type foaf:Person.
                               ?p rdf:type dbo:Scientist.            
                               ?p dbo:wikiPageWikiLink ?links.
