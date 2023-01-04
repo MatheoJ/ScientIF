@@ -172,16 +172,17 @@ function rechercherDomaine(domaine, callback) {
                           PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                           \n
 
-                          SELECT DISTINCT ?type ?name ?label ?image WHERE {
+                          SELECT DISTINCT ?type ?name ?label ?resume ?image WHERE {
                             ?n dbo:academicDiscipline ?type .
                             ?type rdfs:label ?label ;
                                   gold:hypernym ?hypernym .
                             ?type dbo:thumbnail ?image.
+                            ?type dbo:abstract ?resume.
                             filter(regex(?label, "`
                             
   var contenu_requete = domaine;
                             
-  var fin_requete = `", "i") && langMatches(lang(?label),"en"))
+  var fin_requete = `", "i") && langMatches(lang(?label),"en") && langMatches(lang(?resume),"en") )
                       filter(!regex(?hypernym, dbr:System, "i") && !regex(?hypernym, dbr:Journal, "i") && !regex(?hypernym, dbr:Studies, "i")  && !regex(?hypernym, dbr:Name, "i"))
                     }`;
 
@@ -700,7 +701,9 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
               </h5>`;
              
         contenuTableau +=
-            `</div>
+            `
+            <p class='card-text'><span class='more'> ${r.resume.value} </p>
+            </div>
           </div>
         </div>`;
     });
