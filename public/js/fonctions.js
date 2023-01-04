@@ -6,11 +6,11 @@ function rechercher(name) {
 
   function callback() {
     completed++;
-    if (completed === 3 && 
-        document.querySelector("#tableau_dom").style.display === "none" &&  
-        document.querySelector("#tableau_sci").style.display === "none" &&
-        document.querySelector("#tableau_con").style.display === "none") {
-          document.querySelector("#zone-resultats-recherche").innerHTML = "No result found";
+    if (completed === 3 &&
+      document.querySelector("#tableau_dom").style.display === "none" &&
+      document.querySelector("#tableau_sci").style.display === "none" &&
+      document.querySelector("#tableau_con").style.display === "none") {
+      document.querySelector("#zone-resultats-recherche").innerHTML = "No result found";
     }
   }
   rechercherNom(name, callback);
@@ -53,9 +53,9 @@ function rechercherNom(name, callback) {
                                 }
                               
                                 FILTER(regex(?name, "`
-                                
+
   var contenu_requete = name;
-  var fin_requete =             `", "i"))
+  var fin_requete = `", "i"))
                               }`;
 
   var requete = debut_requete + contenu_requete + fin_requete;
@@ -179,9 +179,9 @@ function rechercherDomaine(domaine, callback) {
                             ?type dbo:thumbnail ?image.
                             ?type dbo:abstract ?resume.
                             filter(regex(?label, "`
-                            
+
   var contenu_requete = domaine;
-                            
+
   var fin_requete = `", "i") && langMatches(lang(?label),"en") && langMatches(lang(?resume),"en") )
                       filter(!regex(?hypernym, dbr:System, "i") && !regex(?hypernym, dbr:Journal, "i") && !regex(?hypernym, dbr:Studies, "i")  && !regex(?hypernym, dbr:Name, "i"))
                     }`;
@@ -216,11 +216,11 @@ function rechercherDomaine(domaine, callback) {
       //On peut afficher les informations relatives à la requête et à l'erreur
       .fail(function (error) {
         alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
-    })
-    //Ce code sera exécuté que la requête soit un succès ou un échec
-    .always(function(){
+      })
+      //Ce code sera exécuté que la requête soit un succès ou un échec
+      .always(function () {
         //alert("Requête effectuée");
-    });
+      });
   });
 }
 
@@ -258,9 +258,9 @@ function rechercherInvention(name, callback) {
                                 ?n dbo:abstract ?resume .
 
                                 FILTER(regex(?n, "`
-                                
+
   var contenu_requete = name;
-  var fin_requete =             `", "i") && langMatches(lang(?resume), "en"))
+  var fin_requete = `", "i") && langMatches(lang(?resume), "en"))
                               }`;
 
   var requete = debut_requete + contenu_requete + fin_requete;
@@ -347,8 +347,8 @@ function rechercherConcept(sujet, idTableau, callback) {
       .done(function (response) {
         // let data = (response);
         console.log("rep ", response);
-        
-        if(response.results.bindings.length>0){
+
+        if (response.results.bindings.length > 0) {
           afficherInformations(response, idTableau, "concept");
           callback();
         }
@@ -414,8 +414,8 @@ function rechercherScientifique(objet, idTableau, callback, predicat = "dbo:acad
       .done(function (response) {
         // let data = (response);
         console.log("rep ", response);
-        
-        if(response.results.bindings.length>0){
+
+        if (response.results.bindings.length > 0) {
           afficherInformations(response, idTableau);
           callback();
         }
@@ -436,13 +436,13 @@ function rechercherScientifique(objet, idTableau, callback, predicat = "dbo:acad
   });
 }
 
-function rechercherDoctoralSudent(scientistName, increment){
+function rechercherDoctoralSudent(scientistName, increment) {
   increment -= 1;
   decodeURIComponent(scientistName);
-  scientistName = scientistName.replaceAll(' ', '_');  
+  scientistName = scientistName.replaceAll(' ', '_');
   scientistName = scientistName.replaceAll('(', '\\(');
   scientistName = scientistName.replaceAll(')', '\\)');
-  scientistName = scientistName.replaceAll(',', '\\,');  
+  scientistName = scientistName.replaceAll(',', '\\,');
   scientistName = scientistName.replaceAll("&#39;", "\\'");
   scientistName = scientistName.replaceAll("'", "\\'");
   scientistName = scientistName.replaceAll(".", "\\.");
@@ -465,43 +465,43 @@ function rechercherDoctoralSudent(scientistName, increment){
           OPTIONAL{:${scientistName} dbo:doctoralStudent ?doctoralStudent}
           OPTIONAL{:${scientistName} dbo:thumbnail ?image }
         }`;
-        // Encodage de l'URL à transmettre à DBPedia
-var url_base = "http://dbpedia.org/sparql/";
-$(document).ready(function () {
-  $.ajax({
-    //L'URL de la requête 
-    url: url_base,
+  // Encodage de l'URL à transmettre à DBPedia
+  var url_base = "http://dbpedia.org/sparql/";
+  $(document).ready(function () {
+    $.ajax({
+      //L'URL de la requête 
+      url: url_base,
 
-    //La méthode d'envoi (type de requête)
-    method: "GET",
+      //La méthode d'envoi (type de requête)
+      method: "GET",
 
-    //Le format de réponse attendu
-    dataType: "json",
-    data: { query: requete },
-    beforeSend: afficherChargement($("#zone-resultats-recherche"), "Chargement")
-  })
+      //Le format de réponse attendu
+      dataType: "json",
+      data: { query: requete },
+      beforeSend: afficherChargement($("#zone-resultats-recherche"), "Chargement")
+    })
 
-  /*Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done().
-    On peut par exemple convertir cette réponse en chaine JSON et insérer
-    cette chaine dans un div id="res"
-  */
-  .done(function (response) {
-    // let data = (response);
-    afficherDoctorant(response, increment, scientistName);
-  })
+      /*Ce code sera exécuté en cas de succès - La réponse du serveur est passée à done().
+        On peut par exemple convertir cette réponse en chaine JSON et insérer
+        cette chaine dans un div id="res"
+      */
+      .done(function (response) {
+        // let data = (response);
+        afficherDoctorant(response, increment, scientistName);
+      })
 
-  /* Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
-    On peut afficher les informations relatives à la requête et à l'erreur 
-  */
-  .fail(function (error) {
-    alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
-  })
+      /* Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
+        On peut afficher les informations relatives à la requête et à l'erreur 
+      */
+      .fail(function (error) {
+        alert("La requête s'est terminée en échec. Infos : " + JSON.stringify(error));
+      })
 
-  // Ce code sera exécuté que la requête soit un succès ou un échec
-  .always(function () {
-    //alert("Requête effectuée");
+      // Ce code sera exécuté que la requête soit un succès ou un échec
+      .always(function () {
+        //alert("Requête effectuée");
+      });
   });
-});
 }
 
 function rechercherInventeur(sujet, idTableau, callback) {
@@ -564,12 +564,12 @@ function rechercherInventeur(sujet, idTableau, callback) {
       .done(function (response) {
         // let data = (response);
         console.log("rep ", response);
-        if(response.results.bindings.length>0){
+        if (response.results.bindings.length > 0) {
           console.log("ouioui");
           afficherInformations(response, idTableau);
           callback();
         }
-        
+
       })
 
       /* Ce code sera exécuté en cas d'échec - L'erreur est passée à fail()
@@ -602,7 +602,7 @@ function cacherChargement(zone) {
 
 }
 
-function afficherInformations(data, idTableau, redirectPage="scientist") {
+function afficherInformations(data, idTableau, redirectPage = "scientist") {
   var contenuTableau = "";
 
   data.results.bindings.forEach(r => {
@@ -628,13 +628,13 @@ function afficherInformations(data, idTableau, redirectPage="scientist") {
 // Affichage des résultats dans un tableau
 function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-recherche", afficherDescription = true) {
   // Tableau pour mémoriser l'ordre des variables
-  console.log('donnees',data);
+  console.log('donnees', data);
 
   var titre = "";
   var contenuTableau = "";
 
-  if(typeRecherche == "nom" && data) {
-    
+  if (typeRecherche == "nom" && data) {
+
     titre = "<h1>Scientists</h1>";
 
     data.results.bindings.forEach(r => {
@@ -642,49 +642,49 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
       contenuTableau +=
         `<div class='col mb-3'>
           <div class='card'>
-          <a  href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}">
+          <a  href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/") + 1)}">
             <img src="${r.image.value}" tag="img-responsive" onerror="this.src='/assets/img/scientist.ico'" width="300" height ="250" class="card-img-top" style="object-fit:cover;" alt="..." /> 
           </a>
             <div class='card-body'>
               <h5 class='card-title text-center'>
-                <a class="link-dark " href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/")+1)}">${r.p.value.substring(r.p.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
+                <a class="link-dark " href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/") + 1)}">${r.p.value.substring(r.p.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
               </h5>`;
 
-        if(afficherDescription) {
-          disciplines = r.disciplines.value.split(", ");
-        
-          contenuTableau+= `<div class="card-subtitle mb-2 text-center">`;
+      if (afficherDescription) {
+        disciplines = r.disciplines.value.split(", ");
 
-          disciplines.forEach(element => {
-            contenuTableau += 
-              `<span class="badge bg-secondary mx-1">
+        contenuTableau += `<div class="card-subtitle mb-2 text-center">`;
+
+        disciplines.forEach(element => {
+          contenuTableau +=
+            `<span class="badge bg-secondary mx-1">
                 <a href="/domain/${element.replaceAll(" ", "_")}" class="link-light">
                 ${element}
                 </a>
               </span>`;
-          });      
-          contenuTableau +=
-                `</div>
+        });
+        contenuTableau +=
+          `</div>
                 <p class='card-text'><span class='more'> ${r.resume.value} </p>
                 <!--div class="text-center">
                   <a href='${r.p.value}' class='btn btn-primary' target='_blank'>DBpedia</a>
                 </div-->`;
       }
-      contenuTableau+=`
+      contenuTableau += `
 
             </div>
           </div>
         </div>
-        </div>`
+        </div>`;
     });
 
-    if(contenuTableau != "") {
+    if (contenuTableau != "") {
       $('#zone-nom-sci').html(titre);
       document.querySelector("#tableau_sci").style.display = "block";
       $(idTableau).html(""); // enlève le chargement
       $('#zone-resultats-recherche-sci').html(contenuTableau);
     }
-  } else if(typeRecherche == "domaine" && data) {
+  } else if (typeRecherche == "domaine" && data) {
 
     titre = "<h1>Academic disciplines</h1>";
 
@@ -694,28 +694,28 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
           <div class='card'>
             <div class='card-body'>
               <h5 class='card-title text-center'>
-                <a class="link-dark text-decoration-none" href="/domain/${r.type.value.substring(r.type.value.lastIndexOf("/")+1)}">
+                <a class="link-dark text-decoration-none" href="/domain/${r.type.value.substring(r.type.value.lastIndexOf("/") + 1)}">
                
                   <img src="${r.image.value}" tag="img-responsive" onerror="this.src='/assets/img/domain.ico'" width="300" height ="250" class="card-img-top" style="object-fit:cover;" alt="..." /> 
                   ${r.type.value.substring(r.type.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
               </h5>`;
-             
-        contenuTableau +=
-            `
+
+      contenuTableau +=
+        `
             <p class='card-text'><span class='more'> ${r.resume.value} </p>
             </div>
           </div>
         </div>`;
     });
 
-    if(contenuTableau != "") {
+    if (contenuTableau != "") {
       $('#zone-nom-dom').html(titre);
       document.querySelector("#tableau_dom").style.display = "block";
       $(idTableau).html("");
       $('#zone-resultats-recherche-dom').html(contenuTableau);
     }
   }
-  else if(typeRecherche == "concept" && data) {
+  else if (typeRecherche == "concept" && data) {
     // On place le titre
     titre = "<h1>Concepts</h1>";
 
@@ -726,50 +726,42 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
         `<div class='col mb-3'>
           <div class='card'>`
 
-      if(r.image != undefined) {
+      if (r.image != undefined) {
         contenuTableau += `
-        <a  href="/concept/${r.n.value.substring(r.n.value.lastIndexOf("/")+1)}">
+        <a  href="/concept/${r.n.value.substring(r.n.value.lastIndexOf("/") + 1)}">
         <img src="${r.image.value}" tag="img-responsive" onerror="this.src='/assets/img/concept.ico'" width="300" height ="250" class="card-img-top" style="object-fit:cover;" alt="..." />
         </a>`;
       }
       else {
         contenuTableau += `
-        <a href="/concept/${r.n.value.substring(r.n.value.lastIndexOf("/")+1)}">
+        <a href="/concept/${r.n.value.substring(r.n.value.lastIndexOf("/") + 1)}">
         <img src="/assets/img/concept.ico" tag="img-responsive" width="300" height ="250" class="card-img-top" style="object-fit:cover;" alt="..." />
         </a>`;
       }
-          contenuTableau += `          
+      contenuTableau += `          
             <div class='card-body'>
               <h5 class='card-title text-center'>
-                <a class="link-dark" href="/scientist/${r.n.value.substring(r.n.value.lastIndexOf("/")+1)}">${r.n.value.substring(r.n.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
-              </h5>`;
-
-          contenuTableau +=
-            `</div>
-            <p class='card-text'><span class='more'> ${r.resume.value} </p>
-            <!--div class="text-center">
-              <a href='${r.n.value}' class='btn btn-primary' target='_blank'>DBpedia</a>
-            </div-->`;
-
-      contenuTableau +=`
-
+                <a class="link-dark" href="/concept/${r.n.value.substring(r.n.value.lastIndexOf("/") + 1)}">${r.n.value.substring(r.n.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
+              </h5>
+            
+              <p class='card-text'><span class='more'> ${r.resume.value} </p>
+              </div>
             </div>
           </div>
-        </div>
-        </div>`
+        `;
     });
 
-    if(contenuTableau != "") {
+    if (contenuTableau != "") {
       $(idTableau).html(""); // enlève le chargement   
       document.querySelector("#tableau_con").style.display = "block";
       $('#zone-nom-con').html(titre);
-      $('#zone-resultats-recherche-con').html(contenuTableau);   
-    } 
+      $('#zone-resultats-recherche-con').html(contenuTableau);
+    }
   } else {
     data.results.bindings.forEach(r => {
       contenuTableau +=
-            `</div>`;
-      contenuTableau+= `<p class='card-text'><span class='more'> ${r.resume.value} </span></p>`;
+        `</div>`;
+      contenuTableau += `<p class='card-text'><span class='more'> ${r.resume.value} </span></p>`;
       contenuTableau += `
             <div class="text-center">
               <a href='${r.wikipedia.value}' class='btn btn-primary' target='_blank'>Wikipedia</a>
@@ -777,11 +769,11 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
           </div>
         </div>
        </div>
-       </div>`
+       </div>`;
     });
   }
 
-  if(contenuTableau == "") {
+  if (contenuTableau == "") {
     // $(idTableau).html("Aucun résultat.");
   }
 
