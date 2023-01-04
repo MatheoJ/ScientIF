@@ -237,11 +237,22 @@ function rechercherInvention(name, callback) {
                               \n
                               
                               SELECT DISTINCT ?n ?image ?resume WHERE {
-                                ?p a skos:Concept ;
+                                {?p a skos:Concept ;
                                    skos:broader dbc:Inventions_by_country .
                                 ?n dbo:wikiPageWikiLink ?p ;
                                    a ?type .
-                                                            
+                                }
+                                UNION
+                                {
+                                  ?s a dbo:Scientist.
+                                  ?s dbo:knownFor ?n.
+                                }
+                                UNION
+                                {
+                                  ?s a dbo:Scientist.
+                                  ?s dbo:knownFor ?p1.
+                                  ?n1 dbo:seeAlso ?n.
+                                }                            
                                 OPTIONAL { ?n dbo:thumbnail ?image } .
                                 ?n dbo:abstract ?resume .
 
