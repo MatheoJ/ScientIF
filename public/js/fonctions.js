@@ -51,12 +51,12 @@ function rechercherNom(name, callback) {
                                 { ?p gold:hypernym ?hypernym 
                                   FILTER(regex(?hypernym, dbr:Philosopher) || regex(?hypernym, dbr:Inventor))
                                 }
-                              
+                                ?p dbo:wikiPageWikiLink ?links.
                                 FILTER(regex(?name, "`
 
   var contenu_requete = name;
   var fin_requete = `", "i"))
-                              }`;
+                              } ORDER BY DESC(COUNT(?links))`;
 
   var requete = debut_requete + contenu_requete + fin_requete;
 
@@ -178,13 +178,14 @@ function rechercherDomaine(domaine, callback) {
                                   gold:hypernym ?hypernym .
                             ?type dbo:thumbnail ?image.
                             ?type dbo:abstract ?resume.
+                            ?type dbo:wikiPageWikiLink ?links.
                             filter(regex(?label, "`
 
   var contenu_requete = domaine;
 
   var fin_requete = `", "i") && langMatches(lang(?label),"en") && langMatches(lang(?resume),"en") )
                       filter(!regex(?hypernym, dbr:System, "i") && !regex(?hypernym, dbr:Journal, "i") && !regex(?hypernym, dbr:Studies, "i")  && !regex(?hypernym, dbr:Name, "i"))
-                    }`;
+                    } ORDER BY DESC(COUNT(?links))`;
 
   var requete = debut_requete + contenu_requete + fin_requete;
 
@@ -256,12 +257,12 @@ function rechercherInvention(name, callback) {
                                 }                            
                                 OPTIONAL { ?n dbo:thumbnail ?image } .
                                 ?n dbo:abstract ?resume .
-
+                                
                                 FILTER(regex(?n, "`
 
   var contenu_requete = name;
   var fin_requete = `", "i") && langMatches(lang(?resume), "en"))
-                              }`;
+                              } `;
 
   var requete = debut_requete + contenu_requete + fin_requete;
 
@@ -666,9 +667,7 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
         contenuTableau +=
           `</div>
                 <p class='card-text'><span class='more'> ${r.resume.value} </p>
-                <!--div class="text-center">
-                  <a href='${r.p.value}' class='btn btn-primary' target='_blank'>DBpedia</a>
-                </div-->`;
+                `;
       }
       contenuTableau += `
 
