@@ -635,9 +635,6 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
   var contenuTableau = "";
 
   if (typeRecherche == "nom" && data) {
-
-    titre = "<h1>Scientists</h1>";
-
     data.results.bindings.forEach(r => {
 
       contenuTableau +=
@@ -678,14 +675,11 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
     });
 
     if (contenuTableau != "") {
-      $('#zone-nom-sci').html(titre);
-      document.querySelector("#tableau_sci").style.display = "block";
+      //document.querySelector("#tableau_sci").style.display = "block";
       $(idTableau).html(""); // enlève le chargement
       $('#zone-resultats-recherche-sci').html(contenuTableau);
     }
   } else if (typeRecherche == "domaine" && data) {
-
-    titre = "<h1>Academic disciplines</h1>";
 
     data.results.bindings.forEach(r => {
       contenuTableau +=
@@ -708,15 +702,12 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
     });
 
     if (contenuTableau != "") {
-      $('#zone-nom-dom').html(titre);
       document.querySelector("#tableau_dom").style.display = "block";
       $(idTableau).html("");
       $('#zone-resultats-recherche-dom').html(contenuTableau);
     }
   }
   else if (typeRecherche == "concept" && data) {
-    // On place le titre
-    titre = "<h1>Concepts</h1>";
 
     // On boucle sur les résultats
     data.results.bindings.forEach(r => {
@@ -753,7 +744,6 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
     if (contenuTableau != "") {
       $(idTableau).html(""); // enlève le chargement   
       document.querySelector("#tableau_con").style.display = "block";
-      $('#zone-nom-con').html(titre);
       $('#zone-resultats-recherche-con').html(contenuTableau);
     }
   } else {
