@@ -628,7 +628,7 @@ function afficherInformations(data, idTableau, redirectPage = "scientist") {
 }
 
 // Affichage des résultats dans un tableau
-function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-recherche", afficherDescription = true) {
+function afficherResultats(data, typeRecherche, afficherDescription = true) {
   // Tableau pour mémoriser l'ordre des variables
   console.log('donnees', data);
 
@@ -646,12 +646,9 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
 
     });
 
-    if (contenuTableau != "") {
-      $('#zone-resultats-recherche-sci').html(contenuTableau);
-    }
-    else {
-      $('#zone-resultats-recherche-sci').html("Aucun résultat.");
-    }
+    $('#zone-resultats-recherche-sci').html(contenuTableau == '' ? "Aucun résultat." : contenuTableau);
+    activerCollapsibleTexts('zone-resultats-recherche-sci');
+
   } else if (typeRecherche == "domaine" && data) {
     
     data.results.bindings.forEach(r => {
@@ -664,12 +661,8 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
       );
     });
 
-    if (contenuTableau != "") {
-      $('#zone-resultats-recherche-dom').html(contenuTableau);
-    }
-    else {
-      $('#zone-resultats-recherche-dom').html("Aucun résultat.");
-    }
+    $('#zone-resultats-recherche-dom').html(contenuTableau == '' ? "Aucun résultat." : contenuTableau);
+    activerCollapsibleTexts('zone-resultats-recherche-dom');
   }
   else if (typeRecherche == "concept" && data) {
 
@@ -686,12 +679,8 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
       
     });
 
-    if (contenuTableau != "") {
-      $('#zone-resultats-recherche-con').html(contenuTableau);
-    }
-    else {
-      $('#zone-resultats-recherche-con').html("Aucun résultat.");
-    }
+    $('#zone-resultats-recherche-con').html(contenuTableau == '' ? "Aucun résultat." : contenuTableau);
+    activerCollapsibleTexts('zone-resultats-recherche-con');
     
   } else {
     data.results.bindings.forEach(r => {
@@ -709,7 +698,6 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
     });
   }
 
-  activerCollapsibleTexts();
 }
 
 /**
@@ -735,31 +723,24 @@ function genererHtmlResultat(image, titre, disciplines, resume, lien) {
             </h4>
           
           
-              `;
-
-  contenuTableau += `<div class="mb-2">`;
+            <div class="mb-2">    `;
 
   if(disciplines != undefined) 
     disciplines.forEach(element => {
       contenuTableau +=
-        `<span class="badge bg-secondary mx-1">
-            <a href="${lien}" class="link-light">
-            ${element}
-            </a>
-          </span>`;
+          `   <span class="badge bg-secondary mx-1">
+                <a href="${lien}" class="link-light">
+                  ${element}
+                </a>
+              </span>`;
     });
 
   contenuTableau +=
-    `
-    </div>  
-    <p class=''><span class='more'> ${resume} </p>
+      `     </div>  
+            <p class=''><span class='more'> ${resume} </p>
           
-          `;
+          </div> <!-- col texte -->
+        </div> <!-- row --> `;
 
-  contenuTableau += `
-      </div> <!-- col texte -->
-    </div> <!-- row -->`;
-
-  
   return contenuTableau;
 }
