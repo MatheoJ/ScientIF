@@ -7,3 +7,17 @@
 .hand-cursor {
     cursor: pointer;
 }
+
+.encadre-details-sur-scientist {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 500px;
+    display: block;
+}
+
+.style-logo {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+.grand-logo {
+    font-size: 70px; 
+}
