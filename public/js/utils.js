@@ -1,6 +1,6 @@
 function activerCollapsibleTexts() {
     // Configure/customize these variables.
-    var showChar = 100;  // How many characters are shown by default
+    var showChar = 600;  // How many characters are shown by default
     var ellipsestext = "...";
     var moretext = "Voir plus >";
     var lesstext = "Voir moins";

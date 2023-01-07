@@ -96,6 +96,7 @@ function rechercherNom(name, callback) {
       // Ce code sera exécuté que la requête soit un succès ou un échec
       .always(function () {
         //alert("Requête effectuée");
+        cacherChargement($("#zone-resultats-recherche"));
       });
   });
 }
@@ -631,121 +632,67 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
   // Tableau pour mémoriser l'ordre des variables
   console.log('donnees', data);
 
-  var titre = "";
   var contenuTableau = "";
 
   if (typeRecherche == "nom" && data) {
     data.results.bindings.forEach(r => {
+      contenuTableau += genererHtmlResultat(
+        r.image.value, 
+        r.p.value.substring(r.p.value.lastIndexOf("/") + 1).replaceAll("_", " "),
+        afficherDescription ? r.disciplines.value.split(", ") : undefined,
+        afficherDescription ? r.resume.value : '',
+        "/scientist/" + r.p.value.substring(r.p.value.lastIndexOf("/") + 1)
+      );
 
-      contenuTableau +=
-        `<div class='col mb-3'>
-          <div class='card'>
-          <a  href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/") + 1)}">
-            <img src="${r.image.value}" tag="img-responsive" onerror="this.src='/assets/img/scientist.ico'" width="300" height ="250" class="card-img-top" style="object-fit:cover;" alt="..." /> 
-          </a>
-            <div class='card-body'>
-              <h5 class='card-title text-center'>
-                <a class="link-dark " href="/scientist/${r.p.value.substring(r.p.value.lastIndexOf("/") + 1)}">${r.p.value.substring(r.p.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
-              </h5>`;
-
-      if (afficherDescription) {
-        disciplines = r.disciplines.value.split(", ");
-
-        contenuTableau += `<div class="card-subtitle mb-2 text-center">`;
-
-        disciplines.forEach(element => {
-          contenuTableau +=
-            `<span class="badge bg-secondary mx-1">
-                <a href="/domain/${element.replaceAll(" ", "_")}" class="link-light">
-                ${element}
-                </a>
-              </span>`;
-        });
-        contenuTableau +=
-          `</div>
-                <p class='card-text'><span class='more'> ${r.resume.value} </p>
-                `;
-      }
-      contenuTableau += `
-
-            </div>
-          </div>
-        </div>
-        </div>`;
     });
 
     if (contenuTableau != "") {
-      //document.querySelector("#tableau_sci").style.display = "block";
-      $(idTableau).html(""); // enlève le chargement
       $('#zone-resultats-recherche-sci').html(contenuTableau);
     }
+    else {
+      $('#zone-resultats-recherche-sci').html("Aucun résultat.");
+    }
   } else if (typeRecherche == "domaine" && data) {
-
+    
     data.results.bindings.forEach(r => {
-      contenuTableau +=
-        `<div class='col mb-3'>
-          <div class='card'>
-            <div class='card-body'>
-              <h5 class='card-title text-center'>
-                <a class="link-dark text-decoration-none" href="/domain/${r.type.value.substring(r.type.value.lastIndexOf("/") + 1)}">
-               
-                  <img src="${r.image.value}" tag="img-responsive" onerror="this.src='/assets/img/domain.ico'" width="300" height ="250" class="card-img-top" style="object-fit:cover;" alt="..." /> 
-                  ${r.type.value.substring(r.type.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
-              </h5>`;
-
-      contenuTableau +=
-        `
-            <p class='card-text'><span class='more'> ${r.resume.value} </p>
-            </div>
-          </div>
-        </div>`;
+      contenuTableau += genererHtmlResultat(
+        r.image.value,
+        r.type.value.substring(r.type.value.lastIndexOf("/") + 1).replaceAll("_", " "),
+        undefined,
+        r.resume.value,
+        "/domain/" + r.type.value.substring(r.type.value.lastIndexOf("/") + 1)
+      );
     });
 
     if (contenuTableau != "") {
-      document.querySelector("#tableau_dom").style.display = "block";
-      $(idTableau).html("");
       $('#zone-resultats-recherche-dom').html(contenuTableau);
+    }
+    else {
+      $('#zone-resultats-recherche-dom').html("Aucun résultat.");
     }
   }
   else if (typeRecherche == "concept" && data) {
 
     // On boucle sur les résultats
     data.results.bindings.forEach(r => {
+      contenuTableau += genererHtmlResultat(
+        r.image != undefined ? r.image.value : "/assets/img/concept.ico" ,
+        r.n.value.substring(r.n.value.lastIndexOf("/") + 1).replaceAll("_", " "),
+        undefined,
+        r.resume.value,
+        "/concept/" + r.n.value.substring(r.n.value.lastIndexOf("/") + 1)
+      )
 
-      contenuTableau +=
-        `<div class='col mb-3'>
-          <div class='card'>`
-
-      if (r.image != undefined) {
-        contenuTableau += `
-        <a  href="/concept/${r.n.value.substring(r.n.value.lastIndexOf("/") + 1)}">
-        <img src="${r.image.value}" tag="img-responsive" onerror="this.src='/assets/img/concept.ico'" width="300" height ="250" class="card-img-top" style="object-fit:cover;" alt="..." />
-        </a>`;
-      }
-      else {
-        contenuTableau += `
-        <a href="/concept/${r.n.value.substring(r.n.value.lastIndexOf("/") + 1)}">
-        <img src="/assets/img/concept.ico" tag="img-responsive" width="300" height ="250" class="card-img-top" style="object-fit:cover;" alt="..." />
-        </a>`;
-      }
-      contenuTableau += `          
-            <div class='card-body'>
-              <h5 class='card-title text-center'>
-                <a class="link-dark" href="/concept/${r.n.value.substring(r.n.value.lastIndexOf("/") + 1)}">${r.n.value.substring(r.n.value.lastIndexOf("/") + 1).replaceAll("_", " ")}</a>
-              </h5>
-            
-              <p class='card-text'><span class='more'> ${r.resume.value} </p>
-              </div>
-            </div>
-          </div>
-        `;
+      
     });
 
     if (contenuTableau != "") {
-      $(idTableau).html(""); // enlève le chargement   
-      document.querySelector("#tableau_con").style.display = "block";
       $('#zone-resultats-recherche-con').html(contenuTableau);
     }
+    else {
+      $('#zone-resultats-recherche-con').html("Aucun résultat.");
+    }
+    
   } else {
     data.results.bindings.forEach(r => {
       contenuTableau +=
@@ -762,9 +709,57 @@ function afficherResultats(data, typeRecherche, idTableau = "#zone-resultats-rec
     });
   }
 
-  if (contenuTableau == "") {
-    // $(idTableau).html("Aucun résultat.");
-  }
-
   activerCollapsibleTexts();
+}
+
+/**
+ * 
+ * @param {*} image lien vers l'image
+ * @param {*} titre titre (nom de la personne, du domaine, du concept)
+ * @param {*} domaine liste des disciplines (peut être undefined)
+ * @param {*} resume résumé à afficher
+ * @param {*} lien lien complet vers la page détaillée
+ */
+function genererHtmlResultat(image, titre, disciplines, resume, lien) {
+  contenuTableau =
+        `
+        <div class='row mb-2 border rounded'>
+          <div class='col-3'>
+            <a  href="${lien}">
+              <img src="${image}" tag="img-responsive" onerror="this.src='/assets/img/scientist.ico'" width="300" height ="250" class="card-img-top" style="object-fit:cover;" alt="..." /> 
+            </a>
+          </div> <!-- col image -->
+          <div class='col-9 pt-1'>
+            <h4 class=''>
+              <a class="link-dark " href="${lien}">${titre}</a>
+            </h4>
+          
+          
+              `;
+
+  contenuTableau += `<div class="mb-2">`;
+
+  if(disciplines != undefined) 
+    disciplines.forEach(element => {
+      contenuTableau +=
+        `<span class="badge bg-secondary mx-1">
+            <a href="${lien}" class="link-light">
+            ${element}
+            </a>
+          </span>`;
+    });
+
+  contenuTableau +=
+    `
+    </div>  
+    <p class=''><span class='more'> ${resume} </p>
+          
+          `;
+
+  contenuTableau += `
+      </div> <!-- col texte -->
+    </div> <!-- row -->`;
+
+  
+  return contenuTableau;
 }
