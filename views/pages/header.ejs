@@ -46,15 +46,15 @@
                       <a class="nav-link" href="/random"><i class="bi bi-dice-5-fill"></i> Random scientist</a>
                     </li>
                     
-                    <li class="nav-item ">
-                      <form action="/" method="get">
-                        <div class="input-group input-group-lg">
-                          <input type="text" id="mot_cle" name="mot_cle" class="form-control" placeholder="Isaac Newton..." aria-label="Nom de scientifique" <% if(locals.mot_cle) { %> value="<%= mot_cle %>" <% } %>>
-                          <button id="bouton-recherche" class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
-                        </div>
-                      </form>
-                    </li>
+                    
                   </ul>
+
+                  <form action="/" method="get" class="ms-auto">
+                    <div class="input-group input-group md-form my-0">
+                      <input type="text" id="mot_cle" name="mot_cle" class="form-control" placeholder="Isaac Newton..." aria-label="Nom de scientifique" <% if(locals.mot_cle) { %> value="<%= mot_cle %>" <% } %>>
+                      <button id="bouton-recherche" class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+                    </div>
+                  </form>
 
             </div>
 
