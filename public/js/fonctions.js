@@ -646,8 +646,9 @@ function afficherResultats(data, typeRecherche, afficherDescription = true) {
 
     });
 
-    $('#zone-resultats-recherche-sci').html(contenuTableau == '' ? "Aucun résultat." : contenuTableau);
+    $('#zone-resultats-recherche-sci').html(contenuTableau == '' ? "No results." : contenuTableau);
     activerCollapsibleTexts('zone-resultats-recherche-sci');
+    $('#nb-sci-found').html('('+data.results.bindings.length+')');
 
   } else if (typeRecherche == "domaine" && data) {
     
@@ -661,8 +662,9 @@ function afficherResultats(data, typeRecherche, afficherDescription = true) {
       );
     });
 
-    $('#zone-resultats-recherche-dom').html(contenuTableau == '' ? "Aucun résultat." : contenuTableau);
+    $('#zone-resultats-recherche-dom').html(contenuTableau == '' ? "No results." : contenuTableau);
     activerCollapsibleTexts('zone-resultats-recherche-dom');
+    $('#nb-dom-found').html('('+data.results.bindings.length+')');
   }
   else if (typeRecherche == "concept" && data) {
 
@@ -679,8 +681,9 @@ function afficherResultats(data, typeRecherche, afficherDescription = true) {
       
     });
 
-    $('#zone-resultats-recherche-con').html(contenuTableau == '' ? "Aucun résultat." : contenuTableau);
+    $('#zone-resultats-recherche-con').html(contenuTableau == '' ? "No results." : contenuTableau);
     activerCollapsibleTexts('zone-resultats-recherche-con');
+    $('#nb-con-found').html('('+data.results.bindings.length+')');
     
   } else {
     data.results.bindings.forEach(r => {
@@ -727,9 +730,10 @@ function genererHtmlResultat(image, titre, disciplines, resume, lien) {
 
   if(disciplines != undefined) 
     disciplines.forEach(element => {
-      contenuTableau +=
+      if(element != undefined && element != '')
+        contenuTableau +=
           `   <span class="badge bg-secondary mx-1">
-                <a href="${lien}" class="link-light">
+                <a href="/domain/${element.replaceAll(" ", "_")}" class="link-light">
                   ${element}
                 </a>
               </span>`;
