@@ -31,7 +31,6 @@ function activerCollapsibleTexts(id_element_parent) {
 
             $(this).html(html);
         }
-        console.log("ACTIVE : " + content.substr(0, 20));
 
     });
 }
